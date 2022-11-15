@@ -62,7 +62,7 @@
   \vspace*{1em}
   \begin{subquestion}
     In a) we have seen that by calculating $(\nabla (e_i^T \nabla f(x)))$ for all $e_i$ for $i \in \{1, \dots, n\}$ we can build the whole hessian.
-    We can use the backpropagation algorithm from the lecture to calculate the gradient of $f$. This whole calculation can also be modeled as a computation graph $G$. The graph then is a combination of two graphs, first the computation graph of $f$ and second a mirrored graph of $f$, where each node represents the partial derivative of $f$ with respect to the variable represented by this node. In $G$ there are some interdependencies between the mirrored and non-mirrored graph, where $\deriv{f}{z_i}$ depends on $z_i$. From $G$, which resembles the calculation of $\nabla f(x)$, it is easy to slightly change the calculation to $e_i^T \nabla f(x)$ and call it $G_i$.
+    We can use the backpropagation algorithm from the lecture to calculate the gradient of $f$. This whole calculation can also be modeled as a computation graph $G$. The graph then is a combination of two graphs, first the computation graph of $f$ and second a mirrored graph of $f$, where each node represents the partial derivative of $f$ with respect to the variable represented by this node. In $G$ there are some dependencies between the mirrored and non-mirrored graph, where $\deriv{f}{z_i}$ depends on $z_i$. From $G$, which resembles the calculation of $\nabla f(x)$, it is easy to slightly change the calculation to $e_i^T \nabla f(x)$ and call it $G_i$.
     We can then apply backpropagation overall $G_i$ to calculate the Hessian.
     For the naive approach, we would have to calculate all pairs of second derivatives separately. This can be done by backpropagation to obtain each entry of the matrix individually. There are $n^2$ entries in the hessian, hence the runtime of the naive algorithm would be $\mathcal{O}(n^2 m)$. The $m$ term comes from the backpropagation because each second derivative can be calculated in $\mathcal{O}(m)$, because we know that the calculation of the derivative of $f$ can be done in $\mathcal{O}(m)$ and because the computation graph for $G$ is at most $2$ times as big, we can calculate the second derivative in $\mathcal{O}(m)$.
 
@@ -70,12 +70,16 @@
   \end{subquestion}
 
   \begin{subquestion}
-    The same approach as in b) can be used for any k-th order derivative. For the 3rd-order derivatives, we would combine $G_i$ with a mirrored version of $G_i$ and do backpropagation over this combined graph. The runtime is $\mathcal{O}(n^2m)$. To generalize this approach to the kth order derivative, we would always combine the graph of the $k-1$-th order derivatives with a mirrored version of themselves and do backpropagation over these combined graphs. The runtime would be:
+    The same approach as in b) can be used for any k-th order derivative. For the 3rd-order derivatives, we would combine $G_i$ with a mirrored version of $G_i$ and do backpropagation over this combined graph. The runtime is $\mathcal{O}(n^2m)$. To generalize this approach to the k-th order derivative, we would always combine the graph of the $(k-1)$-th order derivatives with a mirrored version of themselves and do backpropagation over these combined graphs. The runtime would be:
     \begin{align}
       \mathcal{O}(m) + \mathcal{O}\left(\sum_{i=1}^{k} n^{i-1} \cdot m \right) & = \mathcal{O}(n^{k-1} \cdot m) \nonumber
     \end{align}
     The leftmost term $\mathcal{O}(m)$ is needed for the calculation of the first derivative. Then we sum over all derivatives up until the k-th. The $n^{i-}$ term denotes the number of times that we need to do backpropagation.
   \end{subquestion}
+\end{question}
+
+\begin{question}\\
+  Link to colab \href{https://colab.research.google.com/drive/1KIUgSEl3ZjgDLufJk2K3ciZPu7Tq23Ab?usp=sharing}{here}
 \end{question}
 \end{document}
 
