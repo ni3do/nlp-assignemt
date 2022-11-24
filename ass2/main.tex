@@ -87,11 +87,10 @@
     \end{itemize}
   \end{subquestion}
   \begin{subquestion}
-    Our initial graph looks like \cref{fig:graph}.
+    Our initial graph looks like \cref{figure:graph}.
     \begin{figure}[H]
       \centering
-      \caption[]{The initial graph}
-      \label[]{fig:graph}
+      \label{figure:graph}
       \begin{tikzpicture}[node distance={20mm}, thick, main/.style = {draw, circle}]
         \node[main] (0) {$x_{0,0}$};
         \node[main] (1) [below of=0]{$x_{1,0}$};
@@ -128,22 +127,42 @@
         \draw[->] (5) -- (6);
         \draw[->] (5) -- (7);
         \draw[->] (5) -- (8);
+
       \end{tikzpicture}
+      \caption[]{The initial graph}
     \end{figure}
     Where the columns represent the words in $\mathbf{w}$ and the rows represent different tags.
     In this non lifted graph, our forward propagation will yield the following values, when using the score functions as edge weights in the graph:
     \begin{align}
       z_{i,j} & = \sum_{k=0}^{T} (z_{k,j-1} \cdot \score{x_{k, j-1}}{x_{i,j}})
     \end{align}
-    When we now lift the CRF into the expectation semiring, the forward propagation will yield the following values:
+    Where we used the algorithm from the script:
+    \begin{algorithm}
+      \SetAlgoLined
+      \caption{Forward pass}
+      \label{algo:forward}
+      $\beta(\mathbf{w}, t_0) = 1$\\
+      \For{$n = 1 \to N$}{
+        $\beta(\mathbf{w}, t_n) = \sum_{t_{n-1} \in \mathcal{T}} \exp(\score{\langle t_n}{t_{n-1}\rangle}) \otimes \beta(\mathbf{w}, t_{n-1})$
+      }
+    \end{algorithm}
+    When we now lift the CRF into the expectation semiring, the forward propagation algorithm changes to:\\
+    \begin{algorithm}[H]
+      \SetAlgoLined
+      \caption{Forward pass}
+      \label{algo:forward_semi}
+      $\beta(\mathbf{w}, t_0) = \langle 1, 0 \rangle$\\
+      \For{$n = 1 \to N$}{
+        $\beta(\mathbf{w}, t_n) = \oplus_{t_{n-1} \in \mathcal{T}} \langle w, -w \log w \rangle \otimes \beta(\mathbf{w}, t_{n-1})$
+      }
+    \end{algorithm}
+    Where $w = \exp(\score{\langle t_n}{t_{n+1}\rangle})$.\\
+    We want to show that the result of the forward propagation lifted in the semiring is the same as the unnormalized Entropy:
     \begin{align}
-      z_{i,j} & = \sum_{k=0}^{T} (z_{k,j-1} \cdot \pair{w}{-w \log(w)}) &  & w = \score{x_{k,j-1}}{x_{i,j}}
+      H_u(T_{w}) & = -\sum_{\mathbf{t} \in \mathcal{T}^N} \exp(score_{\boldsymbol{\theta}} (\mathbf{t},\boldsymbol{w})) score_{\boldsymbol{\theta}} (\mathbf{t},\boldsymbol{w}) \\
     \end{align}
-    By choosing $w = \exp(\score{x_{k,j-1}}{x_{i,j}})$ and summing over the last column of our graph we get:
-    \begin{align}
-      z & = \sum_{i=0}^{T} z_{i,N}                                                                                         \\
-        & = \sum_{i=0}^{T} \sum_{k=0}^{T} (z_{k,N-1} \cdot \pair{w}{-w \log(w)}) &  & w = \exp(\score{x_{k,N-1}}{x_{i,N}}) \\
-    \end{align}
+
+    We show this by induction
   \end{subquestion}
 \end{question}
 \end{document}
