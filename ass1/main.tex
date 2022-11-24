@@ -72,9 +72,9 @@
   \begin{subquestion}
     The same approach as in b) can be used for any k-th order derivative. For the 3rd-order derivatives, we would combine $G_i$ with a mirrored version of $G_i$ and do backpropagation over this combined graph. The runtime is $\mathcal{O}(n^2m)$. To generalize this approach to the k-th order derivative, we would always combine the graph of the $(k-1)$-th order derivatives with a mirrored version of themselves and do backpropagation over these combined graphs. The runtime would be:
     \begin{align}
-      \mathcal{O}(m) + \mathcal{O}\left(\sum_{i=1}^{k} n^{i-1} \cdot m \right) & = \mathcal{O}(n^{k-1} \cdot m) \nonumber
+      \mathcal{O}\left(\sum_{i=1}^{k} n^{i-1} \cdot m \right) & = \mathcal{O}(n^{k-1} \cdot m) \nonumber
     \end{align}
-    The leftmost term $\mathcal{O}(m)$ is needed for the calculation of the first derivative. Then we sum over all derivatives up until the k-th. The $n^{i-}$ term denotes the number of times that we need to do backpropagation.
+    Then we sum over all derivatives up until the k-th. The $n^{i-}$ term denotes the number of times that we need to do backpropagation.
   \end{subquestion}
 \end{question}
 
