@@ -160,7 +160,7 @@
 		\end{align}
 		We want to show that the result of the forward propagation lifted in the semiring is the same as the unnormalized Entropy:
 		\begin{align}
-			H_u(T_{w}) & = -\sum_{\mathbf{t} \in \mathcal{T}^N} \exp(score_{\boldsymbol{\theta}} (\mathbf{t},\boldsymbol{w})) score_{\boldsymbol{\theta}} (\mathbf{t},\boldsymbol{w}) \\
+			H_u(T_{w}) & = -\sum_{\mathbf{t} \in \mathcal{T}^N} \exp(score_{\boldsymbol{\theta}} (\mathbf{t},\boldsymbol{w})) score_{\boldsymbol{\theta}} (\mathbf{t},\boldsymbol{w}) \label{eq:1b_to_show} \\
 		\end{align}
 		We show this by induction. Starting with the base case where $N = 1$:\\
 		\begin{align}
@@ -178,17 +178,53 @@
 		Meaning we assume that $\beta(\mathbf{w}, t_i)$ corresponds to the unnormalized entropy of all sequences of lenght $i$.\\
 		Now we proceed with the induction step, where $i \rightarrow i + 1$:\\
 		\begin{align}
-			% \bigoplus_{t_{1:i+1} \in T^{i+1}} \overset{i+1}{\bigotimes_{n=1}} \langle w, -w \log w \rangle & = \bigoplus_{t_{1:i} \in T^{i}}  \bigoplus_{t_{1:i+1} \in T^{i+1}} \overset{i}{\bigotimes_{n=1}} \langle w, -w \log w \rangle \otimes \langle w, -w \log(w) \rangle                  \\
-			 & \bigoplus_{t_{1:N} \in T^{n}} \overset{N}{\bigotimes_{n=1}} \langle w, -w \log w \rangle                                                                                                                                                                                        \\
-			 & = \bigoplus_{t_{1:N-1} \in T^{N-1}} \bigoplus_{t_n \in T} \overset{N}{\bigotimes_{n=1}} \langle w, -w \log w \rangle                                                                                                                                                            \\
-			 & = \bigoplus_{t_{1:N-1} \in T^{N-1}} \overset{N-1}{\bigotimes_{n=1}} \langle \exp(\score{t_{n-1}}{t_n}), -\exp(\score{t_{n-1}}{t_n}) \log(\exp(\score{t_{n-1}}{t_n})) \rangle \nonumber                                                                                          \\
-			 & \qquad \otimes \bigoplus_{t_{N} \in T} \langle \exp(\score{t_{N-1}}{t_N}), -\exp(\score{t_{N-1}}{t_N}) \log(\exp(\score{t_{N-1}}{t_N})) \rangle                                                                                                                                 \\
-			 & = \bigoplus_{t_{1} \in T} \left\langle \exp(\score{t_0}{t_1}), -\exp(\score{t_0}{t_1}) \log(\exp(\score{t_0}{t_1})) \right\rangle \nonumber                                                                                                                                     \\
-			 & \qquad \otimes \bigoplus_{t_{2} \in T} \left\langle \exp(\score{t_1}{t_2}), -\exp(\score{t_1}{t_2}) \log(\exp(\score{t_1}{t_2})) \right\rangle \nonumber                                                                                                                        \\
-			 & \qquad \otimes \cdots \nonumber                                                                                                                                                                                                                                                 \\
-			 & \qquad \otimes \bigoplus_{t_{N} \in T} \left\langle \exp(\score{t_{N-1}}{t_N}), -\exp(\score{t_{N-1}}{t_N}) \log(\exp(\score{t_{N-1}}{t_N})) \right\rangle \nonumber                                                                                                            \\
-			 & = \biggr< \sum_{\mathbf{t} \in \mathcal{T}^N} \exp(score_{\boldsymbol{\theta}} (\mathbf{t},\boldsymbol{w})), -\sum_{\mathbf{t} \in \mathcal{T}^N} \exp(score_{\boldsymbol{\theta}} (\mathbf{t},\boldsymbol{w})) score_{\boldsymbol{\theta}} (\mathbf{t},\boldsymbol{w}) \biggr>
+			 & \bigoplus_{t_{1:i+1} \in T^{i+1}} \overset{i+1}{\bigotimes_{n=1}} \langle w, -w \log w \rangle \nonumber                                                                       \\ & = \bigoplus_{t_{1:i+1} \in T}  \left( \bigoplus_{t_{1:i} \in T^{i}} \overset{i}{\bigotimes_{n=1}} \langle w, -w \log w \rangle \right) \otimes \langle w, -w \log(w) \rangle \\
+			 & \overset{\text{I.H.}}{=} \bigoplus_{t_{1:i+1} \in T} \left\langle \sum_{t \in T^{i}} \exp(\sscore{t}), -\sum_{t \in T^{i}} \exp(\sscore(t)) \sscore{t} \right\rangle \nonumber \\
+			 & \otimes \left\langle \exp(\score{t_i}{t_{i+1}}), -\exp(\score{t_i}{t_{i+1}}) \score{t_i}{t_{i+1}}\right\rangle \label{eq:after_ih}
 		\end{align}
+		We will now analyze both parts of the semiring separately:
+		\begin{align}
+			 & \left(\sum_{t \in T^{i}} \exp(\sscore{t}) \right) \exp(\score{t_i}{t_{i+1}})                \\
+			 & = \sum_{t \in T^{i}} \exp(\sscore{t}) + \score{t_i}{t_{i+1}}               \label{eq:semil}
+		\end{align}
+		And the second part:
+		\begin{align}
+			 & \left( \sum_{t \in T^{i}} \exp(\sscore{t}) \right) -\exp(\score{t_i}{t_{i+1}}) \score{t_i}{t_{i+1}} \nonumber                   \\
+			 & \quad + \left( -\sum_{t \in T^{i}} \exp(\sscore(t)) \sscore{t} \right) \exp(\score{t_i}{t_{i+1}})                               \\
+			 & = -\sum_{t \in T^{i}} \exp(\sscore{t} + \score{t_i}{t_{i+1}}) \score{t_i}{t_{i+1}} \nonumber                                    \\
+			 & \quad -\left( \sum_{t \in T^{i}} \exp(\sscore(t)) \sscore{t} \right) \exp(\score{t_i}{t_{i+1}})                                 \\
+			 & = -\sum_{t \in T^{i}} \exp(\sscore{t} + \score{t_i}{t_{i+1}}) \score{t_i}{t_{i+1}} \nonumber                                    \\
+			 & \quad - \sum_{t \in T^{i}} \exp(\sscore{t} + \score{t_i}{t_{i+1}}) \sscore{t}                                                   \\
+			 & = -\sum_{t \in T^{i}} \exp(\sscore{t} + \score{t_i}{t_{i+1}}) \left( \sscore{t} + \score{t_i}{t_{i+1}} \right) \label{eq:semir}
+		\end{align}
+		We can now combine the two parts to get with \cref{eq:after_ih}:
+		\begin{align}
+			 & \bigoplus_{t_{1:i+1} \in T} \left\langle \sum_{t \in T^{i}} \exp(\sscore{t}), -\sum_{t \in T^{i}} \exp(\sscore(t)) \sscore{t} \right\rangle \nonumber               \\
+			 & \quad \otimes \left\langle \exp(\score{t_i}{t_{i+1}}), -\exp(\score{t_i}{t_{i+1}}) \score{t_i}{t_{i+1}}\right\rangle                                                \\
+			 & \overset{\text{def. } \otimes}{=} \bigoplus_{t_{1:i+1} \in T} \biggl\langle \left(\sum_{t \in T^{i}} \exp(\sscore{t}) \right) \exp(\score{t_i}{t_{i+1}}), \nonumber \\
+			 & \quad \left( \sum_{t \in T^{i}} \exp(\sscore{t}) \right) -\exp(\score{t_i}{t_{i+1}}) \score{t_i}{t_{i+1}} \nonumber                                                 \\
+			 & \quad + \left( -\sum_{t \in T^{i}} \exp(\sscore(t)) \sscore{t} \right) \exp(\score{t_i}{t_{i+1}}) \biggr\rangle                                                     \\
+			 & \overset{\cref{eq:semil}}{=} \bigoplus_{t_{1:i+1} \in T} \biggl\langle \sum_{t \in T^{i}} \exp(\sscore{t}) + \score{t_i}{t_{i+1}}, \nonumber                        \\
+			 & \quad \left( \sum_{t \in T^{i}} \exp(\sscore{t}) \right) -\exp(\score{t_i}{t_{i+1}}) \score{t_i}{t_{i+1}} \nonumber                                                 \\
+			 & \quad + \left( -\sum_{t \in T^{i}} \exp(\sscore(t)) \sscore{t} \right) \exp(\score{t_i}{t_{i+1}}) \biggr\rangle                                                     \\
+			 & \overset{\cref{eq:semir}}{=} \bigoplus_{t_{1:i+1} \in T} \biggl\langle \sum_{t \in T^{i}} \exp(\sscore{t}) + \score{t_i}{t_{i+1}}, \nonumber                        \\
+			 & \quad -\sum_{t \in T^{i}} \exp(\sscore{t} + \score{t_i}{t_{i+1}}) \left( \sscore{t} + \score{t_i}{t_{i+1}} \right) \biggr\rangle                                    \\
+			 & \overset{\text{def. } \oplus}{=} \biggl\langle \sum_{t_{i+1} \in T} \sum_{t \in T^{i}} \exp(\sscore{t}) + \score{t_i}{t_{i+1}}, \nonumber                           \\
+			 & \quad \sum_{t_{i+1} \in T} \sum_{t \in T^{i}} \exp(\sscore{t} + \score{t_i}{t_{i+1}}) \left( \sscore{t} + \score{t_i}{t_{i+1}} \right) \biggr\rangle                \\
+			 & = \left\langle \sum_{t \in T^{i+1}} \exp(\sscore{t}), -\sum_{t \in T^{i+1}} \exp(\sscore{t}) \sscore{t} \right\rangle
+		\end{align}
+		Which concludes our induction proof and we have shown that \cref*{eq:1b_to_show} holds.
+		% \begin{align}	
+		% 	 & \bigoplus_{t_{1:N} \in T^{n}} \overset{N}{\bigotimes_{n=1}} \langle w, -w \log w \rangle                                                                                                                                                                                        \\
+		% 	 & = \bigoplus_{t_{1:N-1} \in T^{N-1}} \bigoplus_{t_n \in T} \overset{N}{\bigotimes_{n=1}} \langle w, -w \log w \rangle                                                                                                                                                            \\
+		% 	 & = \bigoplus_{t_{1:N-1} \in T^{N-1}} \overset{N-1}{\bigotimes_{n=1}} \langle \exp(\score{t_{n-1}}{t_n}), -\exp(\score{t_{n-1}}{t_n}) \log(\exp(\score{t_{n-1}}{t_n})) \rangle \nonumber                                                                                          \\
+		% 	 & \qquad \otimes \bigoplus_{t_{N} \in T} \langle \exp(\score{t_{N-1}}{t_N}), -\exp(\score{t_{N-1}}{t_N}) \log(\exp(\score{t_{N-1}}{t_N})) \rangle                                                                                                                                 \\
+		% 	 & = \bigoplus_{t_{1} \in T} \left\langle \exp(\score{t_0}{t_1}), -\exp(\score{t_0}{t_1}) \log(\exp(\score{t_0}{t_1})) \right\rangle \nonumber                                                                                                                                     \\
+		% 	 & \qquad \otimes \bigoplus_{t_{2} \in T} \left\langle \exp(\score{t_1}{t_2}), -\exp(\score{t_1}{t_2}) \log(\exp(\score{t_1}{t_2})) \right\rangle \nonumber                                                                                                                        \\
+		% 	 & \qquad \otimes \cdots \nonumber                                                                                                                                                                                                                                                 \\
+		% 	 & \qquad \otimes \bigoplus_{t_{N} \in T} \left\langle \exp(\score{t_{N-1}}{t_N}), -\exp(\score{t_{N-1}}{t_N}) \log(\exp(\score{t_{N-1}}{t_N})) \right\rangle \nonumber                                                                                                            \\
+		% 	 & = \biggr< \sum_{\mathbf{t} \in \mathcal{T}^N} \exp(score_{\boldsymbol{\theta}} (\mathbf{t},\boldsymbol{w})), -\sum_{\mathbf{t} \in \mathcal{T}^N} \exp(score_{\boldsymbol{\theta}} (\mathbf{t},\boldsymbol{w})) score_{\boldsymbol{\theta}} (\mathbf{t},\boldsymbol{w}) \biggr>
+		% \end{align}
 	\end{subquestion}
 	\begin{subquestion}
 		We want to prove:\\
