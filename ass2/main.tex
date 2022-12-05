@@ -243,6 +243,42 @@
 		\end{align}
 	\end{subquestion}
 \end{question}
+\begin{question}\\
+	\begin{subquestion}
+		We again show the correctness by induction.\\
+
+		\textbf{Base case ($|\boldmath{w}|=1$):}\\
+		Our base case is a sequence with length $1$. After dequeueing the first element from the queue, which is the initialization element, we push elements for all possible taggings of the first word. In the next iteration, due to the priority queue structure we dequeue the element with the highest score. This is now a complete tagging for our sequence of length $1$ and it has the highest score.\\\\
+		\textbf{Induction hypothesis}:\\
+		The first sequence of length $i$ that is popped from the queue has the highest score among all sequences of length $i$.\\\\
+		\textbf{Induction step ($i \rightarrow i+1$)}:\\
+		Here we have two cases, one where the best tagging for sequence of length $i+1$ contains the best tagging for sequence of length $i$ as a prefix and one where it does not.\\
+		\textbf{Case 1 ($t_{1:i} \in t_{1:i+1}$)}:\\
+		Here $t_{1:i}$ denotes the a tagging for $w_1, \dots, w_i$.
+		This case is straight forward, as per our induction hypothesis we know that $t_{1:i}$ is the best tagging for sequence of length $i$ and will therefore be the first element for sequence of length $i$ that is popped from the queue. The reasoning is the same as in the base case, all possible taggings of the next word are pushed to the queue and the element with the highest score is popped next.\\
+		\textbf{Case 2 ($t_{1:i} \notin t_{1:i+1}$)}:\\
+		Because our scores are in $\mathcal{R}_{\leq 0}$ we know that when we add to a sequence we can only decrease the score. Assume that the best tagging for length $i+1$ $T_{1:i+1}$ has score $s_{i+1}$. We then have two cases for all taggings $t_{1:k}$ where $k \leq i$. Either they are smaller or equal to $s_{i+1}$, then we do not care about them, since they cannot be used for the best tagging because we can only decrease them even more. Or they are larger than $s_{i+1}$, then we know that they will get popped before $T_{1:i+1}$, because they have a higher score. Therefore we know that the subtagging of $T_{1:i+1}$ $t'_{1:i}$ will be popped before any tagging with length $i+1$. This holds by contradiction, as otherwise $T_{1:i+1}$ would not be the best tagging.
+	\end{subquestion}
+	\begin{subquestion}
+		We want to show that as Viterbi calculates the best tagging of lenght $i$ and ending with tag $t$ in $\gamma[i, t]$, so does Dijkstra.\\
+		First we look at the dimension of $\gamma$, we know that for the Viterbi algorithm $\gamma$ has dimensions $\mathcal{R}^{N \otimes |\mathcal{T}|}$. We can clearly see that Dijkstra matches these dimensions, as for every possible tuple of tags $t \in \mathcal{T}$ and lenght $1 \leq i \leq N$ we have a score in $\gamma$. This holds because we save all pairs in an array and only allow distinct pairs in our queue (priority is updated when we have an overlap).\\
+		To prove that the values are equivalent as well, we perform a contradiction proof:\\
+		We assume that the score $s_{i}$ of tagging $T_{1:i}$ is not the best tagging of length $i$ and it's score is saved in $\gamma[i, t]$. Then there must exist a tagging $T_{1:i}'$ with score $s_{i}'$ that is better than $T_{1:i}$. Going back to the algorithm and our argument of exercise a) we know that all subtaggings $T_{1:k}'$ for $k \leq i$ have a higher score than $s_{i}'$ and therefore must have been popped from the queue before $\langle i, t \rangle$ and hence $\gamma[i, t]$ would be set to $s_{i}'$. This contradicts our assumption and therefore $s_{i}$ must be the best tagging of length $i$ and it's score is saved in $\gamma[i, t]$.
+	\end{subquestion}
+	\begin{subquestion}
+		The normal Dijkstra with a priority queue based on a heap runs in $\mathcal{O}(|V| \log(|V|) + |E|)$. Our graph has $|\mathcal{T}| \cdot |\mathbf{w}|$ vertices as we have all possible taggins for each word. The edges are bound by $|\mathcal{T}|^2 \cdot |\mathbf{w}|$. This bound holds, becasuse each tag for a word has a connection to all other tags for the next word. When combining these insights we get the following runtime bound:
+		\begin{align}
+			\mathcal{O}(|\mathcal{T}||\mathbf{w}| \log(|\mathcal{T}||\mathbf{w}|) + |\mathcal{T}|^2 \cdot |\mathbf{w}|)
+		\end{align}
+		Viterbi:
+		\begin{align}
+			\mathcal{O}(|\mathbf{w}| \cdot |T|^2)
+		\end{align}
+	\end{subquestion}
+	\begin{subquestion}
+		No, because the given semiring operation does not update our priority queue correctly and hence we would not always have the best tagging of a given lenght $i$ popped first.
+	\end{subquestion}
+\end{question}
 \end{document}
 
 %%% Local Variables:
