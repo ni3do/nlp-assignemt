@@ -242,6 +242,11 @@
 			       & = H_U(T_{\boldsymbol{w}}) Z(\boldsymbol{w})^{-1}  + \log(Z(\boldsymbol{w}))                                                                                                              \\
 		\end{align}
 	\end{subquestion}
+	\begin{subquestion}
+		We want to show that $H(T_w)$ can be computed in $\mathcal{O}(N \cdot |\mathcal{T}|^2)$.\\
+		We do this by looking at the identity given in the previous subquestion and show that each term can be computed in at most $\mathcal{O}(|\mathcal{T}|^2)$. As stated in the exercise $\log(Z(\boldmath{w}))$ can be computed in $\mathcal{O}(|\mathcal{T}|^2)$. In exercise b) we have shown that with the expectation semiring we can calculate $H_U(T_w)$ with one forward / backward pass. \cref{algorithm:forward_semi} shows that the forward pass can be done in $\mathcal{O}(N \cdot |\mathcal{T}|)$, $\mathcal{O}(N)$ for the outer loop times the sum over all possible taggings, which adds $\mathcal{O}(|T|)$. The last term, $Z(\boldmath{w})$ can also be calculated in $\mathcal{O}(N \cdot |\mathcal{T}|)$, by running a forward / backwards pass without a semiring. This is shown in the lectures "Efficiently Computing the Normalizer", where we use  the distributive property of the product to calculate the normalizer with a linear number of terms. When we have all the subterms we only need a multiplication and an addition to arrive at $H(T_w)$.\\\\
+		What about gradient?
+	\end{subquestion}
 \end{question}
 \begin{question}\\
 	\begin{subquestion}
