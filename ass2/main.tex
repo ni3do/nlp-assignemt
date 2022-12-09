@@ -214,17 +214,6 @@
 			 & = \left\langle \sum_{t \in T^{i+1}} \exp(\sscore{t}), -\sum_{t \in T^{i+1}} \exp(\sscore{t}) \sscore{t} \right\rangle
 		\end{align}
 		Which concludes our induction proof and we have shown that \cref*{eq:1b_to_show} holds.
-		% \begin{align}	
-		% 	 & \bigoplus_{t_{1:N} \in T^{n}} \overset{N}{\bigotimes_{n=1}} \langle w, -w \log w \rangle                                                                                                                                                                                        \\
-		% 	 & = \bigoplus_{t_{1:N-1} \in T^{N-1}} \bigoplus_{t_n \in T} \overset{N}{\bigotimes_{n=1}} \langle w, -w \log w \rangle                                                                                                                                                            \\
-		% 	 & = \bigoplus_{t_{1:N-1} \in T^{N-1}} \overset{N-1}{\bigotimes_{n=1}} \langle \exp(\score{t_{n-1}}{t_n}), -\exp(\score{t_{n-1}}{t_n}) \log(\exp(\score{t_{n-1}}{t_n})) \rangle \nonumber                                                                                          \\
-		% 	 & \qquad \otimes \bigoplus_{t_{N} \in T} \langle \exp(\score{t_{N-1}}{t_N}), -\exp(\score{t_{N-1}}{t_N}) \log(\exp(\score{t_{N-1}}{t_N})) \rangle                                                                                                                                 \\
-		% 	 & = \bigoplus_{t_{1} \in T} \left\langle \exp(\score{t_0}{t_1}), -\exp(\score{t_0}{t_1}) \log(\exp(\score{t_0}{t_1})) \right\rangle \nonumber                                                                                                                                     \\
-		% 	 & \qquad \otimes \bigoplus_{t_{2} \in T} \left\langle \exp(\score{t_1}{t_2}), -\exp(\score{t_1}{t_2}) \log(\exp(\score{t_1}{t_2})) \right\rangle \nonumber                                                                                                                        \\
-		% 	 & \qquad \otimes \cdots \nonumber                                                                                                                                                                                                                                                 \\
-		% 	 & \qquad \otimes \bigoplus_{t_{N} \in T} \left\langle \exp(\score{t_{N-1}}{t_N}), -\exp(\score{t_{N-1}}{t_N}) \log(\exp(\score{t_{N-1}}{t_N})) \right\rangle \nonumber                                                                                                            \\
-		% 	 & = \biggr< \sum_{\mathbf{t} \in \mathcal{T}^N} \exp(score_{\boldsymbol{\theta}} (\mathbf{t},\boldsymbol{w})), -\sum_{\mathbf{t} \in \mathcal{T}^N} \exp(score_{\boldsymbol{\theta}} (\mathbf{t},\boldsymbol{w})) score_{\boldsymbol{\theta}} (\mathbf{t},\boldsymbol{w}) \biggr>
-		% \end{align}
 	\end{subquestion}
 	\begin{subquestion}
 		We want to prove:\\
@@ -244,8 +233,8 @@
 	\end{subquestion}
 	\begin{subquestion}
 		We want to show that $H(T_w)$ can be computed in $\mathcal{O}(N \cdot |\mathcal{T}|^2)$.\\
-		We do this by looking at the identity given in the previous subquestion and show that each term can be computed in at most $\mathcal{O}(|\mathcal{T}|^2)$. As stated in the exercise $\log(Z(\boldmath{w}))$ can be computed in $\mathcal{O}(|\mathcal{T}|^2)$. In exercise b) we have shown that with the expectation semiring we can calculate $H_U(T_w)$ with one forward / backward pass. \cref{algorithm:forward_semi} shows that the forward pass can be done in $\mathcal{O}(N \cdot |\mathcal{T}|)$, $\mathcal{O}(N)$ for the outer loop times the sum over all possible taggings, which adds $\mathcal{O}(|T|)$. The last term, $Z(\boldmath{w})$ can also be calculated in $\mathcal{O}(N \cdot |\mathcal{T}|)$, by running a forward / backwards pass without a semiring. This is shown in the lectures "Efficiently Computing the Normalizer", where we use  the distributive property of the product to calculate the normalizer with a linear number of terms. When we have all the subterms we only need a multiplication and an addition to arrive at $H(T_w)$.\\\\
-		What about gradient?
+		We do this by looking at the identity given in the previous subquestion and show that each term can be computed in at most $\mathcal{O}(N \cdot |\mathcal{T}|^2)$. As stated in the exercise $\log(Z(\boldmath{w}))$ can be computed in $\mathcal{O}(N \cdot |\mathcal{T}|^2)$. In exercise b) we have shown that with the expectation semiring we can calculate $H_U(T_w)$ with one forward/backward pass. \cref{algorithm:forward_semi} shows that the forward pass can be done in $\mathcal{O}(N \cdot |\mathcal{T}|)$, for the outer loop over the word length and for each iteration the sum over all possible taggings. The last term, $Z(\boldmath{w})$, can also be calculated in $\mathcal{O}(N \cdot |\mathcal{T}|)$, by running a forward/backwards pass without a semiring. This is shown in the lectures "Efficiently Computing the Normalizer", where we use  the distributive property of the product to calculate the normalizer with a linear number of terms. When we have all the subterms we only need a multiplication and an addition to arrive at $H(T_w)$.\\\\
+		We can calculate the gradient by doing backpropagation over its computation graph. Hence, this can be done in the same bound as $\mathcal{O}(N \cdot |T|^2)$
 	\end{subquestion}
 \end{question}
 \begin{question}\\
