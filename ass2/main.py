@@ -1020,6 +1020,8 @@ def train_model_report_accuracy(
     return None
 
 
+print(f"Starting training with beta 1.0")
+
 torch.manual_seed(SEED)
 random.seed(SEED)
 np.random.seed(SEED)
@@ -1046,3 +1048,61 @@ train_model_report_accuracy(
 )
 
 pickle.dump(crf, open("crf_b1_0", "wb"))
+
+print(f"Starting training with beta 10.0")
+
+torch.manual_seed(SEED)
+random.seed(SEED)
+np.random.seed(SEED)
+
+entropy_regularized_crf = NeuralCRF(
+    pad_idx_word=pad_token_idx,
+    pad_idx_pos=pos_vocab[pad_token],
+    bos_idx=init_token_idx,
+    eos_idx=sep_token_idx,
+    bot_idx=pos_vocab[init_token],
+    eot_idx=pos_vocab[sep_token],
+    t_cal=T_CAL,
+    transformer=bert,
+    beta=10.0,
+)
+train_model_report_accuracy(
+    entropy_regularized_crf,
+    LR,
+    EPOCHS,
+    train_dataloader,
+    valid_dataloader,
+    pad_token_idx,
+    pos_vocab[pad_token],
+)
+
+pickle.dump(crf, open("crf_b10", "wb"))
+
+print(f"Starting training with beta 0.1")
+
+torch.manual_seed(SEED)
+random.seed(SEED)
+np.random.seed(SEED)
+
+entropy_regularized_crf = NeuralCRF(
+    pad_idx_word=pad_token_idx,
+    pad_idx_pos=pos_vocab[pad_token],
+    bos_idx=init_token_idx,
+    eos_idx=sep_token_idx,
+    bot_idx=pos_vocab[init_token],
+    eot_idx=pos_vocab[sep_token],
+    t_cal=T_CAL,
+    transformer=bert,
+    beta=0.1,
+)
+train_model_report_accuracy(
+    entropy_regularized_crf,
+    LR,
+    EPOCHS,
+    train_dataloader,
+    valid_dataloader,
+    pad_token_idx,
+    pos_vocab[pad_token],
+)
+
+pickle.dump(crf, open("crf_b0_1", "wb"))

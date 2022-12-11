@@ -270,8 +270,109 @@
 		\end{align}
 	\end{subquestion}
 	\begin{subquestion}
-		No, because the given semiring operation does not update our priority queue correctly and hence we would not always have the best tagging of a given lenght $i$ popped first.
+		The problem with the given semiring, is that multiple scores for a given tagging can affect the priority. This is a problem because we want the priority to be representative of the best score and not depend on other scores, which may be much worse. Hence, this semiring would not always have the best tagging of a given lenght $i$ popped first.
 	\end{subquestion}
+	\begin{subquestion}
+		The property that we need from our semiring, are the ones that we use in our proof. One of which is $s_{1:i} \geq s_{1:i+1}$. Since we are using the $\otimes$ operator to build $s_{1:i+1}$ from $s_{1:i}$, this gives as constraints on the operator. Our priority queue must always return the tagging with the best score, hence we need the $\oplus$ to be a max operator. We could also have used a min operator, but then we would have to negate the scores.\\
+	\end{subquestion}
+\end{question}
+\begin{question}\\
+	Link to Colab Notebook: \url{https://colab.research.google.com/drive/1lFGpgB3MTTJZGb9akxGsRegdfDDEdf_p?usp=sharing}
+	\\
+	Question e):\\
+	The naive viterbi implementation is clearly the slowest, which matches our expectation. Dijkstra is the second fastest, with a runtime of $34.8$ ms and backward viterbi is the fastest with $25.1$ ms (local runtimes, but matches results on colab). These observations match our expectations.
+	I did the training for and g) outside of the notebook, just with a single python script as I was getting reduced performance and errors when running in the notebook.\\
+	Output for g):\\
+	\begin{verbatim}
+		Starting training with beta 1.0
+		Epoch 0, batch 0
+		Epoch 0, batch 20
+		...
+		Epoch 0, batch 360
+		Epoch 0, batch 380
+		-------------------------
+		Epoch: 1 / 3
+		Development set accuracy: 0.8933365941047668
+		-------------------------
+		Epoch 1, batch 0
+		Epoch 1, batch 20
+		...
+		Epoch 2, batch 360
+		Epoch 1, batch 380
+		-------------------------
+		Epoch: 2 / 3
+		Development set accuracy: 0.906506359577179
+		-------------------------
+		Epoch 2, batch 0
+		Epoch 2, batch 20
+		...
+		Epoch 2, batch 360
+		Epoch 2, batch 380
+		-------------------------
+		Epoch: 3 / 3
+		Development set accuracy: 0.9176903367042542
+		-------------------------
+	\end{verbatim}
+	\begin{verbatim}
+		Starting training with beta 10.0
+		Epoch 0, batch 0
+		Epoch 0, batch 20
+		...
+		Epoch 0, batch 360
+		Epoch 0, batch 380
+		-------------------------
+		Epoch: 1 / 3
+		Development set accuracy: 0.8931728601455688
+		-------------------------
+		Epoch 1, batch 0
+		Epoch 1, batch 20
+		...
+		Epoch 1, batch 360
+		Epoch 1, batch 380
+		-------------------------
+		Epoch: 2 / 3
+		Development set accuracy: 0.9124546051025391
+		-------------------------
+		Epoch 2, batch 0
+		Epoch 2, batch 20
+		...
+		Epoch 2, batch 360
+		Epoch 2, batch 380
+		-------------------------
+		Epoch: 3 / 3
+		Development set accuracy: 0.9162563681602478
+		-------------------------
+	\end{verbatim}
+	\begin{verbatim}
+		Starting training with beta 0.1
+		Epoch 0, batch 0
+		Epoch 0, batch 20
+		...
+		Epoch 0, batch 360
+		Epoch 0, batch 380
+		-------------------------
+		Epoch: 1 / 3
+		Development set accuracy: 0.9024679660797119
+		-------------------------
+		Epoch 1, batch 0
+		Epoch 1, batch 20
+		...
+		Epoch 1, batch 360
+		Epoch 1, batch 380
+		-------------------------
+		Epoch: 2 / 3
+		Development set accuracy: 0.9182560443878174
+		-------------------------
+		Epoch 2, batch 0
+		Epoch 2, batch 20
+		...
+		Epoch 2, batch 360
+		Epoch 2, batch 380
+		-------------------------
+		Epoch: 3 / 3
+		Development set accuracy: 0.9221615791320801
+		-------------------------
+	\end{verbatim}
 \end{question}
 \end{document}
 
