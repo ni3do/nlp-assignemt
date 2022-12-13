@@ -104,6 +104,37 @@
 		\end{itemize}
 	\end{subquestion}
 \end{question}
+\begin{question}\\
+	\begin{subquestion}
+		Tropical semiring is $0$-closed:
+		\begin{align}
+			a + \mathcal{1} & = a + \infty \\
+			                & = \infty
+		\end{align}
+		Arctic semiring is $0$-closed:
+		\begin{align}
+			a + \mathcal{1} & = a -\infty \\
+			                & = -\infty
+		\end{align}
+	\end{subquestion}
+	\begin{subquestion}
+		Proof by induction:\\
+		Base case $i = 1$:
+		\begin{align}
+			M^1    & = M                             \\
+			M_{ij} & = w_{ij} & \text{by def of $M$}
+		\end{align}
+		$w_{ij}$ is exactly the semiring-sum over all paths from $i$ to $j$ of length $1$. This holds because there is only one path of length $1$ from $i$ to $j$.\\
+		Induction hypothesis:
+		$M^{i}_{ij}$ is the semiring-sum over all paths from $i$ to $j$ of length $i$.\\
+		Induction step $i \rightarrow i + 1$:\\
+		\begin{align}
+			M^{i + 1}    & = M^i \otimes M                                                                            \\
+			M^{i+1}_{kj} & = \sum_{l=0}^{n} M^{i}_{kl} \otimes M_{lj} & \text{def matrix mult.} \label{eq:mip1_entry} \\
+		\end{align}
+		In \cref*{eq:mip1_entry} we sum over the product of all possible paths of length $i$ from $k$ to another node $l$ and all possible paths of length $1$ from nodes $l$ to $j$. This sum is exactly the semiring-sum over all possible paths of length $i + 1$ from $k$ to $j$.\\
+	\end{subquestion}
+\end{question}
 \end{document}
 
 %%% Local Variables:
