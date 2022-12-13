@@ -23,8 +23,86 @@
 	\quad\newline
 	\timestamp
 \end{center}
-\begin{question}
-	fd
+\begin{question}\\
+	\begin{subquestion}
+		We show that under Definition 1, the following holds:
+		\begin{align}
+			a^* & \overset{!}{=} 1 \oplus a \otimes a^*                        \\
+			    & = 1 \oplus a \otimes \bigotimes_{n=0}^{\infty} a^{\otimes n} \\
+			    & = 1 \oplus \bigotimes_{n=0}^{\infty} a^{\otimes n+1}         \\
+			    & = 1 \oplus \bigotimes_{n=1}^{\infty} a^{\otimes n}           \\
+			    & = \bigotimes_{n=0}^{\infty} a^{\otimes n}                    \\
+			    & = a^*
+		\end{align}
+	\end{subquestion}
+	\begin{subquestion}
+		\begin{align}
+			\mathbb{R}^*
+		\end{align}
+	\end{subquestion}
+	\begin{subquestion}
+		\begin{align}
+			\left(\mathbb{R} \times \mathbb{R} \right)^*
+		\end{align}
+	\end{subquestion}
+	\begin{subquestion}
+		\begin{align}
+			\mathcal{W}_{\text{lang}} & =\left\langle 2^{\Sigma^*}, \bigcup, \otimes, \{\}, \{\epsilon\} \right\rangle
+		\end{align}
+		\begin{itemize}
+			\item  $(2^{\Sigma^*}, \oplus, \mathbf{0})$ must be a commutative monoid with identity element $\mathbf{0}$:
+			      \begin{align}
+				      \left(x \oplus y\right) \oplus z & = (x \cup y) \cup z                \\
+				                                       & = \{x, y\} \cup z                  \\
+				                                       & = \{x, y, z\}                      \\
+				                                       & = x \oplus \{y, z\}                \\
+				                                       & = x \oplus \left(y \oplus z\right)
+			      \end{align}
+			      \begin{align}
+				      \mathbf{0} \oplus x & = \{\} \oplus x \\
+				                          & = \{\} \cup x   \\
+				                          & = \oplus
+			      \end{align}
+			      \begin{align}
+				      x \oplus y & = x \cup y \\
+				                 & = \{x, y\} \\
+				                 & = y \cup x \\
+				                 & = y + x
+			      \end{align}
+			\item $(2^{\Sigma^*}, \otimes, \mathbf{1})$ must be a monoid with identity element $\mathbf{1}$:
+			      \begin{align}
+				      \left( x \otimes y \right) \otimes z & = xy \otimes z                       \\
+				                                           & = xyz                                \\
+				                                           & = x \otimes yz                       \\
+				                                           & = x \otimes \left(y \otimes z\right)
+			      \end{align}
+			      \begin{align}
+				      \mathbf{1} \otimes x & = \{\epsilon\} \otimes x \\
+				                           & = x                      \\
+				                           & = x \otimes \{\epsilon\} \\
+				                           & = x \otimes \mathbf{1}
+			      \end{align}
+			\item Multiplication left and right distributes over addition:
+			      \begin{align}
+				      x \otimes \left( y \oplus z\right) & = x \otimes \{y, z\}                                          \\
+				                                         & = \{xy, xz\}                                                  \\
+				                                         & = \{xy\} \cup \{xz\}                                          \\
+				                                         & = \left( x \otimes y \right) \oplus \left( x \otimes z\right)
+			      \end{align}
+			      \begin{align}
+				      \left(x \oplus y\right) \otimes z & = \{x, y\} \otimes z                                         \\
+				                                        & = \{xz, yz\}                                                 \\
+				                                        & = \{xz\} \cup \{yz\}                                         \\
+				                                        & = \left( x \otimes z\right) \oplus \left( y \otimes z\right)
+			      \end{align}
+			\item Multiplication by $\mathbf{0}$ annihilates $\R \times \R$:
+			      \begin{align}
+				      \mathbf{0} \otimes x & = \{a \circ b \,|\, a \in A, b \in \{\}\}                                                             \\
+				                           & = \{\}                                    &  & \text{by definition of $\circ$, because no $b$ exists} \\
+				                           & = x \otimes \mathbf{0}                                                                                \\
+			      \end{align}
+		\end{itemize}
+	\end{subquestion}
 \end{question}
 \end{document}
 
