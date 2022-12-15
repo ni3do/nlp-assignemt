@@ -36,19 +36,66 @@
 		\end{align}
 	\end{subquestion}
 	\begin{subquestion}
+		First we show that $\log a \oplus a = \log(2) + a$:
 		\begin{align}
-			\mathbb{R}^*
+			a \oplus \log a & = \log(e^{a} + e^{a}) \\
+			                & = \log(2 e^{a})       \\
+			                & = \log(2) + a
+		\end{align}
+		Then we calculate the Kleene start:
+		\begin{align}
+			\bigoplus_{\log \; n=0}^{\infty} a^{\oplus n} & = a^{\oplus 0} \oplus_{\log} \left( \bigoplus_{\log \; n=1}^{\infty} a^{\oplus n} \right)   \\
+			                                              & = 0 \oplus_{\log} \left( \bigoplus_{\log \; n=1}^{\infty} a^{\oplus n} \right)              \\
+			                                              & = 0 \oplus_{\log} a \oplus_{\log} 2a \oplus_{\log} 3a \oplus_{\log}\cdots                   \\
+			                                              & = \log\left( e^{0} + e^{a} \right) \oplus_{\log} 2a \oplus_{\log} 3a \oplus_{\log}\cdots    \\
+			                                              & = \log \left( e^{\log(e^{0} + e^{a})} + e^{2a} \right) \oplus_{\log} 3a \oplus_{\log}\cdots \\
+			                                              & = \log \left( e^{0} + e^{a} + e^{2a} \right) \oplus_{\log} 3a \oplus_{\log}\cdots           \\
+			                                              & = \log \left( \sum_{n=0}^{\infty} e^{a^{\oplus n}} \right)
+		\end{align}
+		We have two cases here, either $a > 0$ or $a \leq 0$. In the first case, the sum diverges and we get $\infty$. In the second case, the sum converges:
+		\begin{align}
+			\sum_{n=0}^{\infty} e^{a^{\oplus n}} & = \frac{1}{1 - e^{a}} &  & \text{limit geometric series}
+		\end{align}
+		Therefore, we get:
+		\begin{align}
+			\log \left( \sum_{n=0}^{\infty} e^{a^{\oplus n}} \right) & = \log \left( \frac{1}{1 - e^{a}}\right) \\
+			                                                         & = \log(1) - \log(1 - e^{a})              \\
+			                                                         & = \log(1 - e^{a})
 		\end{align}
 	\end{subquestion}
 	\begin{subquestion}
+		First we derive a closed form solution for $(x, y)^{\oplus n}$:
 		\begin{align}
-			\left(\mathbb{R} \times \mathbb{R} \right)^*
+			\langle x, y \rangle^{\oplus 1} & = \langle x, y \rangle                                              \\
+			\langle x, y \rangle^{\oplus 2} & = \langle x^2, 2xy \rangle                                          \\
+			\langle x, y \rangle^{\oplus 3} & = \langle x^3, 3x^2y \rangle                                        \\
+			\langle x, y \rangle^{\oplus 4} & = \langle x^4, 4x^3y \rangle                                        \\
+			\langle x, y \rangle^{\oplus n} & = \langle x^n, nx^{n-1}y \rangle \label{eq:power_oplus_expectation}
 		\end{align}
+		Then we derive a closed form for $a^*$:
+		\begin{align}
+			\bigoplus_{n=0}^{\infty} \langle x, y \rangle^{\oplus n} & = \bigoplus_{n=0}^{\infty} \langle x^n, nx^{n-1}y \rangle                             & \text{\cref*{eq:power_oplus_expectation}} \\
+			                                                         & = \left\langle \sum_{n=0}^{\infty} x^{n}, \sum_{n=0}^{\infty} nx^{n-1} y\right\rangle
+		\end{align}
+		Both parts only converge for $|x| < 1$. The left parts is a geometric series and has limit $\frac{1}{1-x}$. And the right parts, which is a power series:
+		\begin{align}
+			\sum_{n=0}^{\infty} nx^{n-1} y & = y \sum_{n=0}^{\infty} nx^{n-1}                                                  \\
+			                               & = y \left( 0 + \sum_{n=1}^{\infty} nx^{n-1}\right)                                \\
+			                               & = y \sum_{n=0}^{\infty} (n+1) x^{n}                                               \\
+			                               & = y \frac{1}{(x -1)^2}                             &  & \text{limit power series} \\
+			                               & = \frac{y}{(x-1)^2}
+		\end{align}
+		Hence our closed form with inserted limits is given by:
+		\begin{align}
+			\left\langle \sum_{n=0}^{\infty} x^{n}, \sum_{n=0}^{\infty} nx^{n-1} y\right\rangle & = \left\langle \frac{1}{1-x}, \frac{y}{(x-1)^2}\right\rangle &  & |x| \leq 1
+		\end{align}
+		If $|x| > 1$ both parts diverge.
 	\end{subquestion}
 	\begin{subquestion}
 		\begin{align}
 			\mathcal{W}_{\text{lang}} & =\left\langle 2^{\Sigma^*}, \bigcup, \otimes, \{\}, \{\epsilon\} \right\rangle
 		\end{align}
+		We first show that $\mathcal{W}_{\text{lang}}$ is a semiring:
 		\begin{itemize}
 			\item  $(2^{\Sigma^*}, \oplus, \mathbf{0})$ must be a commutative monoid with identity element $\mathbf{0}$:
 			      \begin{align}
@@ -102,19 +149,28 @@
 				                           & = x \otimes \mathbf{0}                                                                                \\
 			      \end{align}
 		\end{itemize}
+		The Kleene start for $\mathcal{W}_{\text{lang}}$ given by:
+		\begin{align}
+			A^{\otimes n} & = \{ \bigotimes_{i=0}^{n} a_i \;|\; a_i \in A\}                                     \\
+			A^*           & = \bigoplus_{n=0}^{\infty} A^{\otimes n}                                            \\
+			              & = \bigoplus_{n=0}^{\infty} \left\{ \bigotimes_{i=0}^{n} a_i \;|\; a_i \in A\right\} \\
+			              & = \left\{ \bigotimes_{i=0}^{n} a_i \;|\; a_i \in A, n \in \mathbb{Z} \right\}
+		\end{align}
 	\end{subquestion}
 \end{question}
 \begin{question}\\
 	\begin{subquestion}
 		Tropical semiring is $0$-closed:
 		\begin{align}
-			a + \mathcal{1} & = a + \infty \\
-			                & = \infty
+			a \oplus \boldsymbol{0} & = \min(a, \boldsymbol{0})                                                 \\
+			                        & = \min(a, 0)                                                              \\
+			                        & = 0                       &  & \text{because $a \in \mathbb{R}_{\geq 0}$}
 		\end{align}
 		Arctic semiring is $0$-closed:
 		\begin{align}
-			a + \mathcal{1} & = a -\infty \\
-			                & = -\infty
+			a \oplus \boldsymbol{0} & = \max(a, \boldsymbol{0})                                                 \\
+			                        & = \max(a, 0)                                                              \\
+			                        & = 0                       &  & \text{because $a \in \mathbb{R}_{\leq 0}$}
 		\end{align}
 	\end{subquestion}
 	\begin{subquestion}
@@ -130,7 +186,7 @@
 		Induction step $i \rightarrow i + 1$:\\
 		\begin{align}
 			M^{i + 1}    & = M^i \otimes M                                                                            \\
-			M^{i+1}_{kj} & = \sum_{l=0}^{n} M^{i}_{kl} \otimes M_{lj} & \text{def matrix mult.} \label{eq:mip1_entry} \\
+			M^{i+1}_{kj} & = \sum_{l=0}^{n} M^{i}_{kl} \otimes M_{lj} & \text{def matrix mult.} \label{eq:mip1_entry}
 		\end{align}
 		In \cref*{eq:mip1_entry} we sum over the product of all possible paths of length $i$ from $k$ to another node $l$ and all possible paths of length $1$ from nodes $l$ to $j$. This sum is exactly the semiring-sum over all possible paths of length $i + 1$ from $k$ to $j$.\\
 	\end{subquestion}
