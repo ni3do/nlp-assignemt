@@ -185,10 +185,45 @@
 		$M^{i}_{ij}$ is the semiring-sum over all paths from $i$ to $j$ of length $i$.\\
 		Induction step $i \rightarrow i + 1$:\\
 		\begin{align}
-			M^{i + 1}    & = M^i \otimes M                                                                            \\
-			M^{i+1}_{kj} & = \sum_{l=0}^{n} M^{i}_{kl} \otimes M_{lj} & \text{def matrix mult.} \label{eq:mip1_entry}
+			M^{i + 1}    & = M^i \otimes M                                                                             \\
+			M^{i+1}_{kj} & = \sum_{l=0}^{n} M^{i}_{kl} \otimes M_{lj} & \text{def. matrix mult.} \label{eq:mip1_entry}
 		\end{align}
 		In \cref*{eq:mip1_entry} we sum over the product of all possible paths of length $i$ from $k$ to another node $l$ and all possible paths of length $1$ from nodes $l$ to $j$. This sum is exactly the semiring-sum over all possible paths of length $i + 1$ from $k$ to $j$.\\
+	\end{subquestion}
+	\begin{subquestion}
+		s
+	\end{subquestion}
+	\begin{subquestion}
+		Per definition of the Kleene start, we have:
+		\begin{align}
+			M^* & = \bigoplus_{i=0}^{\infty} M^{\otimes i}
+		\end{align}
+		In b) we have shown that $M^{\otimes i}$ is the semiring-sum over all paths of length $i$ and in c) we have shown that the shortest path depends only on paths of length $l \leq N-1$. We also showed that under the $\bigoplus$ operation, only paths of length $l \leq N-1$ are considered. Therefore, we know that $M^*$ depends only on:
+		\begin{align}
+			M^{*} & = \bigoplus_{i=0}^{N-1} M^{\otimes i}
+		\end{align}
+	\end{subquestion}
+	\begin{subquestion}
+		We define a simple algorithm:\\
+		\begin{algorithm}[H]
+			\label{M_star}
+			\caption{Matrix multiplication for Kleene star}
+			$M$\;
+			$M' \gets M$
+			$M^* \gets \mathbf{0}$\;
+			\For{$i = 0$ to $N-1$}{
+			\For{$j = 0$ to len($M$)}{
+			\For{$k = 0$ to len($M$)}{
+			\For{$l = 0$ to len($M$)}{
+			$M'_{j,k} \gets M'_{j,k} \oplus \left( M_{j,l} \otimes M_{l,k}\right)$
+			}
+			$M^*_{j,k} \gets M^*_{j,k} \oplus M'_{j,k}$
+			}
+			}
+			$M \gets M'$\;
+			}
+		\end{algorithm}
+		The inner for loops calculate the matrix multiplication, $M^{\otimes n}$, and the outer loop iterates $N-1$ times to calculate the Kleene star. Since each loop has $\mathcal{O}(N)$ iterations, the algorithm has a runtime of $\mathcal{O}(N^4)$.\\
 	\end{subquestion}
 \end{question}
 \end{document}
