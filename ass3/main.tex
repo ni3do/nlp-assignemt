@@ -190,8 +190,31 @@
 		\end{align}
 		In \cref*{eq:mip1_entry} we sum over the product of all possible paths of length $i$ from $k$ to another node $l$ and all possible paths of length $1$ from nodes $l$ to $j$. This sum is exactly the semiring-sum over all possible paths of length $i + 1$ from $k$ to $j$.\\
 	\end{subquestion}
-	\begin{subquestion}
-		s
+	\begin{subquestion}If we have a graph $G$ with $N$ vertices, then a path with length $l \geq N$ must visit at least one vertex $v$ twice. From this follows, that we can just remove this cycle at vertex $v$ and reduce the path to a path of length at most $N - 1$. If there are multiple cycles, we can remove all of them until we arrive at a path of length at most $N - 1$. Let us now assume that the longest path in $G$ has length $l \geq N-1$. The weight of this path is the following:
+		\begin{align}
+			v_{0} \overset{w_0}{\rightarrow} v_1 \rightarrow \dots \rightarrow v_{k} \rightarrow \dots \rightarrow v_{k} \rightarrow \dots \overset{v_{l-2}}{\rightarrow} v_{l-1} \overset{w_{l-1}}{\rightarrow} v_l \\
+			w_0 \otimes \dots \otimes w_{k-1} \otimes w_{k} \otimes \dots \otimes w'_{k} \otimes w_{k+1} \otimes \dots \otimes w_{l-1}
+		\end{align}
+		Notice the cycle in the middle, which we know exists given our reasoning before. We can remove this cycle and arrive at the following path with new weight:
+		\begin{align}
+			v_{0} \overset{w_0}{\rightarrow} v_1 \rightarrow \dots \rightarrow v_{k} \rightarrow \dots \overset{v_{l-2}}{\rightarrow} v_{l-1} \overset{w_{l-1}}{\rightarrow} v_l \\
+			w_0 \otimes \dots \otimes w_{k-1} \otimes w_{k+1} \otimes \dots \otimes w_{l-1}
+		\end{align}
+		We first define weights for subpaths:
+		\begin{align}
+			s_0 & = w_0 \otimes \dots \otimes w_{k-1}     &  & \text{path to $k$}            \\
+			s_1 & = w_{k} \otimes \dots \otimes w'_{k}    &  & \text{cycle at $k$-th vertex} \\
+			s_2 & = w_{k+1} \otimes \dots \otimes w_{l-1} &  & \text{path from $k$ to $l$}   \\
+		\end{align}
+		We now rewright out path weights and add them over our semiring:
+		\begin{align}
+			\left( s_0 \otimes s_1 \otimes s_2 \right) \oplus \left( s_0 \otimes s_2 \right)                       \\
+			\left( s_0 \right) \otimes \left( \left( s_1 \otimes s_2 \right) \oplus s_2 \right)                    \\
+			\left( s_0 \right) \otimes \left( s_2 \otimes \left( s_1 \oplus 1 \right) \right)                      \\
+			\left( s_0 \right) \otimes \left( s_2 \otimes 1 \right) &  & \text{def. $0$-closed}                    \\
+			s_0 \otimes s_2                                         &  & \text{def. $\mathbf{1}$} \label{eq:end2c}
+		\end{align}
+		We see that \cref{eq:end2c} is exactly the weight of the path without the cycle. Since this holds for every path of length $l \geq N$ we can conclude that the longest path in $G$ has length at most $N - 1$.\\
 	\end{subquestion}
 	\begin{subquestion}
 		Per definition of the Kleene start, we have:
@@ -209,7 +232,7 @@
 			\label{M_star}
 			\caption{Matrix multiplication for Kleene star}
 			$M$\;
-			$M' \gets M$
+			$M' \gets M$\;
 			$M^* \gets \mathbf{0}$\;
 			\For{$i = 0$ to $N-1$}{
 			\For{$j = 0$ to len($M$)}{
@@ -224,6 +247,112 @@
 			}
 		\end{algorithm}
 		The inner for loops calculate the matrix multiplication, $M^{\otimes n}$, and the outer loop iterates $N-1$ times to calculate the Kleene star. Since each loop has $\mathcal{O}(N)$ iterations, the algorithm has a runtime of $\mathcal{O}(N^4)$.\\
+	\end{subquestion}
+	\begin{subquestion}
+		\begin{align}
+			a \oplus a & = a \otimes \left( \mathbf{1} \oplus \mathbf{1} \right)                               \\
+			           & = a \otimes \mathbf{1}                                  &  & \text{def. 0-closed}     \\
+			           & = a                                                     &  & \text{def. $\mathbf{1}$}
+		\end{align}
+	\end{subquestion}
+	\begin{subquestion}
+		We show given equality with an induction proof:
+		Base case $n = 0$:
+		\begin{align}
+			\bigoplus_{n=0}^{0} M^n & = M^0                         \\
+			                        & = \left( I \oplus M \right)^0
+		\end{align}
+		Where we assumed that:
+		\begin{align}
+			I \oplus M = M
+		\end{align}
+		Our induction hypothesis is:
+		\begin{align}
+			\bigoplus_{n=0}^{n} M^n = \left( I \oplus M \right)^{n}
+		\end{align}
+		Now for the inductive step we have $n \rightarrow n+1$:
+		\begin{align}
+			\bigoplus_{i=0}^{n+1} M^i & = \bigoplus_{i=0}^{n} M^i \oplus M^{n+1}                                                                         \\
+			                          & = M^0 \oplus \bigoplus_{i=0}^{n} M^i \oplus M^{n+1}                                                              \\
+			                          & = M^0 \oplus\bigoplus_{i=0}^{n} \left(  M^i \oplus M^i \right) \oplus M^{n+1}    &  & \text{(def. Idempotent)}   \\
+			                          & = \bigoplus_{i=0}^{n} M^i \oplus \bigoplus_{i=1}^{n+1} M^i                                                       \\
+			                          & = \bigoplus_{i=0}^{n} M^{i} \otimes \left( \mathbf{I} \oplus M\right)            &  & \text{(def. distributive)} \\
+			                          & = \left( \mathbf{I} \oplus M \right)^n \otimes \left( \mathbf{I} \oplus M\right) &  & \text{(def. I.H.)}         \\
+			                          & = \left( \mathbf{I} \oplus M \right)^{n+1}
+		\end{align}
+	\end{subquestion}
+	\begin{subquestion}
+		With the log factor, we immediately think about binary representation. We use the product of power rule to rewrite our left side of the equation:
+		\begin{align}
+			\bigotimes_{k=0}^{\left\lfloor \log_2 n \right\rfloor} M^{\alpha_k 2^k} & = M^{\sum_{k=0}^{\left\lfloor \log_2 n \right\rfloor} \alpha_k 2^k}
+		\end{align}
+		We now analyze the exponent of $M$ more closely. If we choose $\alpha_k$ to represent the k-th bit in the binary representation of $n$, we can see that $\sum_{k=0}^{\left\lfloor \log_2 n \right\rfloor}\alpha_k 2^k = n$. Therefore, we can rewrite the equation as:
+		\begin{align}
+			\bigotimes_{k=0}^{\left\lfloor \log_2 n \right\rfloor} M^{\alpha_k 2^k} & = M^{\sum_{k=0}^{\left\lfloor \log_2 n \right\rfloor} \alpha_k 2^k} \\
+			                                                                        & = M^n
+		\end{align}
+		With this insight, we can rewrite the algorithm to calculate $M^*$:\\
+		\begin{algorithm}[H]
+			\label{M_star}
+			\caption{Matrix multiplication for Kleene star}
+			$M$\;
+			$M' \gets M$\;
+			$M^* \gets \mathbf{0}$\;
+			\For{$i = 0$ to $\log_2(N-1)$}{
+			\If{$a_i == 0$}{
+			\For{$j = 0$ to len($M$)}{
+			\For{$k = 0$ to len($M$)}{
+			\For{$l = 0$ to len($M$)}{
+			$M'_{j,k} \gets M'_{j,k} \oplus \left( M_{j,l} \otimes M_{l,k}\right)$
+			}
+			$M^*_{j,k} \gets M^*_{j,k} \oplus M'_{j,k}$
+			}
+			}
+			$M \gets M'$\;
+			}
+			}
+		\end{algorithm}
+		As we have just remove some iterations from the outer most loop, our runtime changes to $\mathcal{O}(n^3 \log n)$
+	\end{subquestion}
+	\begin{subquestion}
+		We derive the SVD of $A$:
+		\begin{align}
+			A       & = U \Sigma V^T                      \\
+			||A||_2 & = ||U \Sigma V^T||_2 = ||\Sigma||_2
+		\end{align}
+		Further we can rewrite the operator norm by w.l.o.g choosing $x$ such that $||x||_2 = 1$:
+		\begin{align}
+			||A||_2 & = \sup_{x \neq 0} \frac{||Ax||_2}{||x||_2} \\
+			        & = \sup_{x \neq 0, ||x||_2 = 1} ||Ax||_2    \\
+		\end{align}
+		Combining these two insight we get:
+		\begin{align}
+			||A||_2 & = \sup_{x \neq 0, ||x||_2 = 1} ||\Sigma x||_2                               \\
+			        & =\sigma_{\text{max}}(A)                       &  & \text{(min-max theorem)}
+		\end{align}
+	\end{subquestion}
+	\begin{subquestion}
+		\begin{align}
+			||A^* - \sum_{n=0}^K A^n ||_2 & = || \sum_{n=0}^{\infty} A^n - \sum_{n=0}^{K} A^n ||_2                                                                                            \\
+			                              & = || \sum_{n=K+1}^{\infty} A^n ||_2                                                                                                               \\
+			                              & = \sigma_{\text{max}}\left(\sum_{n=K+1}^{\infty} A^n \right)      &  & \text{(ex. i))}                                                            \\
+			                              & \leq \sum_{n=K+1}^{\infty} \sigma_{\text{max}} \left( A^n \right) &  & \text{(singular value inequalities)}                                       \\
+			                              & \leq \sum_{n=K+1}^{\infty} \sigma_{\text{max}} \left( A \right)^n &  & \text{(singular value inequalities)}                                       \\
+			                              & = \frac{\sigma_{\text{max}}(A)^{K+1}}{1 - \sigma_{\text{max}}(A)} &  & \text{(geom. series if $\sigma_{\text{max}}(A) < 1$))} \label{eq:closed_j} \\
+		\end{align}
+		\cref*{eq:closed_j} shows the closed form solution if $\sigma_{\text{max}}(A) < 1$. If $\sigma_{\text{max}}(A) \geq 1$, the closed form solution is not defined as the geometric series diverges.\\
+		The condition on $\sigma_{\text{max}}(A)$ for the truncation error to converge to $A^*$ therefore is $\sigma_{\text{max}}(A) < 1$:
+		\begin{align}
+			\lim_{K \to \infty} \frac{\sigma_{\text{max}}(A)^{K+1}}{1 - \sigma_{\text{max}}(A)} & = 0
+		\end{align}
+	\end{subquestion}
+	\begin{subquestion}
+		If $\sigma_{\text{max}}(A) \geq 1$ the truncation error is unbounded and the truncation is not a good approximation to asteration.\\
+		In the case where $\sigma_{\text{max}}(A) < 1$ the truncation error in $\mathcal{O}$ is given by:
+		\begin{align}
+			\mathcal{O}\left( \frac{\sigma_{\text{max}}(A)^{K+1}}{1 - \sigma_{\text{max}}(A)} \right) & = \mathcal{O} \left( \sigma_{\text{max}}(A)^K \right)
+		\end{align}
+		Hence the error decays exponentially, which is then generally deemed to be acceptable for an error and so a truncation is a good approximation to asteration.
 	\end{subquestion}
 \end{question}
 \end{document}
