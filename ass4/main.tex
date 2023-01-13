@@ -1,0 +1,145 @@
+\documentclass[a4paper,12pt]{ETHexercise}
+\usepackage{bbm}
+
+\input{preamble}
+
+\usepackage{multirow}
+\title{NLP Assignment}
+\begin{document}
+\setserie{1}
+
+
+\newcommand{\pair}[2]{{\langle #1 , #2 \rangle}}
+\newcommand{\score}[2]{\text{score}_{\theta}(\langle #1, #2 \rangle, \boldsymbol{w})}
+\newcommand{\sscore}[1]{\text{score}_{\theta}(#1, \boldsymbol{w})}
+\newcommand*{\eos}{\text{EOS}}
+
+\lectureheader{Prof. Ryan Cotterell}
+{}
+{\Large Natural Language Processing}{Fall 2022}
+\begin{center}
+	{\Huge Simon Wachter: Assignment 4}\\
+	\quad\newline
+	siwachte@ethz.ch, 19-920-198\\
+	\quad\newline
+	\timestamp
+\end{center}
+\begin{question}\\
+	\begin{subquestion}
+		\begin{align}
+			\sum_{w \in \Sigma^*} \tilde{p}(w) & = \sum_{w \in \Sigma^*, |w|=1} \tilde{p}(w) + \sum_{w \in \Sigma^*, |w|=2} \tilde{p}(w) + \sum_{w \in \Sigma^*, |w|=3} \tilde{p}(w) + \dots                      \\
+			                                   & = \sum_{w \in \Sigma} \tilde{p}(w) + \sum_{w \in \Sigma^*, |w|=2} \tilde{p}(w) + \sum_{w \in \Sigma^*, |w|=3} \tilde{p}(w) + \dots                               \\
+			                                   & = 1 + \sum_{w \in \Sigma^*, |w|=2} \tilde{p}(w) + \sum_{w \in \Sigma^*, |w|=3} \tilde{p}(w) + \dots                                                              \\
+			                                   & = 1 + \sum_{w \in \Sigma, |w|=1} \sum_{w' \in \Sigma^*} \tilde{p}(w) \tilde{p}(w') + \sum_{w \in \Sigma^*, |w|=3} \tilde{p}(w) + \dots                           \\
+			                                   & = 1 + \sum_{w \in \Sigma} \tilde{p}(w) \sum_{w' \in \Sigma^*, |w|=1} \tilde{p}(w') + \sum_{w \in \Sigma^*, |w|=3} \tilde{p}(w) + \dots                           \\
+			                                   & = 1 + \sum_{w \in \Sigma} \tilde{p}(w) \sum_{w' \in \Sigma} \tilde{p}(w') + \sum_{w \in \Sigma^*, |w|=3} \tilde{p}(w) + \dots                                    \\
+			                                   & = 1 + 1 \cdot 1 + \sum_{w \in \Sigma^*, |w|=3} \tilde{p}(w) + \dots                                                                                              \\
+			                                   & = 1 + 1 \cdot 1 + \sum_{w \in \Sigma}  \sum_{w \in \Sigma^*, |w|=2} \tilde{p}(w) \tilde{p}(w') + \dots                                                           \\
+			                                   & = 1 + 1 \cdot 1 + \sum_{w \in \Sigma} \tilde{p}(w) \sum_{w \in \Sigma^*, |w|=2} \tilde{p}(w') + \dots                                                            \\
+			                                   & = 1 + 1 \cdot 1 + 1 \cdot 1 \cdot 1 + \dots                                                                                                \label{1a_inf_series}
+		\end{align}
+		We can see that the series \eqref{1a_inf_series} diverges to $\infty$.
+	\end{subquestion}
+	\begin{subquestion}
+		We first state some equations that are used later:
+		\begin{align}
+			\sum_{w \in \Sigma \cup \{\eos\}} p(w) & = 1 \label{1b_sum_p}                                                                                 \\
+			\sum_{w \in \Sigma} p(w)               & < 1                                                                                                  \\
+			\sum_{w \in \Sigma} p(\eos)p(w)        & = p(\eos) \sum_{w \in \Sigma} p(w)                                                                   \\
+			\sum_{w \in \Sigma^*, |w|=0} p(w)      & = p(\eos)                          &  & \text{because we have only one EOS symbol} \label{1b_sum_p0} \\
+		\end{align}
+		We define $l$ as:
+		\begin{align}
+			l & = \sum_{w \in \Sigma} p(w) \label{1b_def_l} \\
+			l & < 1
+		\end{align}
+		\begin{align}
+			\sum_{w \in \Sigma^*} p(w) & =  \sum_{w \in \Sigma^*, |w|=0} \tilde{p}(w) + \sum_{w \in \Sigma^*, |w|=1} \tilde{p}(w) + \sum_{w \in \Sigma^*, |w|=2} \tilde{p}(w) + \sum_{w \in \Sigma^*, |w|=3} \tilde{p}(w) + \dots                       \\
+			                           & = p(\eos) + \sum_{w \in \Sigma^*, |w|=1} \tilde{p}(w) + \sum_{w \in \Sigma^*, |w|=2} \tilde{p}(w) + \sum_{w \in \Sigma^*, |w|=3} \tilde{p}(w) + \dots                                                          \\
+			                           & = p(\eos) \left( 1 + \sum_{w \in \Sigma^*, |w|=1} \tilde{p}(w) + \sum_{w \in \Sigma^*, |w|=2} \tilde{p}(w) + \sum_{w \in \Sigma^*, |w|=3} \tilde{p}(w) + \dots                                         \right) \\
+			                           & = p(\eos) \left( 1 + \sum_{w \in \Sigma^*, |w|=1} \tilde{p}(w) + \sum_{w \in \Sigma^*, |w|=2}  \tilde{p}(w) + \sum_{w \in \Sigma^*, |w|=3}  \tilde{p}(w) + \dots  \right)                                      \\
+			                           & =  p(\eos) \left( 1 + \sum_{w \in \Sigma} p(w) + \sum_{w \in \Sigma^*, |w|=2}  \tilde{p}(w) + \sum_{w \in \Sigma^*, |w|=3}  \tilde{p}(w) + \dots \right)                                                       \\
+			                           & = p(\eos) \left( 1 + l + \sum_{w \in \Sigma^*, |w|=2}  \tilde{p}(w) + \sum_{w \in \Sigma^*, |w|=3}  \tilde{p}(w) + \dots  \right)                                                                              \\
+			                           & = p(\eos) \left( 1 + l + \sum_{w \in \Sigma} \sum_{w' \in \Sigma} p(w)p(w') + \sum_{w \in \Sigma^*, |w|=3}  \tilde{p}(w) + \dots \right)                                                                       \\
+			                           & = p(\eos) \left( 1 + l +  \sum_{w \in \Sigma} p(w) \sum_{w' \in \Sigma} p(w') + \sum_{w \in \Sigma^*, |w|=3}  \tilde{p}(w) + \dots  \right)                                                                    \\
+			                           & = p(\eos) \left( 1 + l + l^2 + \sum_{w \in \Sigma^*, |w|=3}  \tilde{p}(w) + \dots   \right)                                                                                                                    \\
+			                           & = p(\eos) \left( 1 + l + l^2 + l^3 + \dots     \right)                                                                                                                                                         \\
+			                           & = p(\eos) \left(\sum_{n=0}^{\infty} l^n                                                 \right)                                                                                                                \\
+			                           & = p(\eos) \frac{1}{1-l} \quad\quad \text{(limit geom. series, because $l < 1$)} \label{1b_sum_p2}                                                                                                              \\
+			                           & = \frac{p(\eos)}{1 - (1-p(\eos))}                                                                                                                                                                              \\
+			                           & = \frac{p(\eos)}{p(\eos)}                                                                                                                                                                                      \\
+			                           & = 1
+		\end{align}
+	\end{subquestion}
+	\begin{subquestion}
+		\begin{align}
+			\sum_{u \in \Sigma^*} p(wu) & = \sum_{u \in \Sigma^*} p(\eos | wu) p_{pre}(u|w)p_{pre}(w)                &  & \text{by def.}    \\
+			                            & = p_{pre}(w) \left( \sum_{u \in \Sigma^*} p(\eos | wu) p_{pre}(u|w)\right)                        \\
+			                            & = p_{pre}(w) \left( \sum_{u \in \Sigma^*}p(u | w) \right)                  &  & \text{def. p(w)}  \\
+			                            & = p_{pre}(w) \left( \sum_{u \in \Sigma^*} \frac{p(w|u)p(u)}{p(w)} \right)  &  & \text{Bayes rule} \\
+			                            & = p_{pre}(w) \left( \frac{p(w)}{p(w)}\right)                               &  & \text{Bayes rule} \\
+			                            & = p_{pre}(w)
+		\end{align}
+	\end{subquestion}
+	\begin{subquestion}
+		We use CKY with the $(+, \times)$-semiring. Further we use $\log p$ insted of $p$ for our score function. These operations will lead to the desired $p(w)$ being calculated at the top of the tree.
+	\end{subquestion}
+	\begin{subquestion}
+		\begin{align}
+			p(S \overset{*}{\Rightarrow} wv) & = \sum_{t \in \mathcal{T}_x(wv)} p(t)                                                                                                                                        \\
+			                                 & = \sum_{t \in \mathcal{T}_x(w_0, \dots, w_k)} p(t) + \sum_{t \in \mathcal{T}_x(w_{k+1}, \dots, v_0, \dots, v_m)} p(t) + \sum_{t \in \mathcal{T}_x(v_{m+1}, \dots, v_l)} p(t) \\
+		\end{align}
+		?????
+	\end{subquestion}
+	\begin{subquestion}
+		Following the hint given in the exercise, we create a matrix $M \in |\mathcal{N}| \times |\mathcal{N}|$ where each entry $M_{Y,X}$ corresponds to the probability of deriving $Y$ from $X$:
+		\begin{align}
+			M_{Y,X} & = p(X \rightarrow Y\alpha)
+		\end{align}
+		We can see that by multiplying in the inside semiring this matrix with itself we get the probability of deriving $i$ from $j$ in two steps and so on. Thus, the kleene star over $M$ will yield the desired property. To derive the kleene star:
+		\begin{align}
+			M^*       & =\bigotimes_{k=0}^{\infty}                              \\
+			          & =I + M \bigotimes_{k=0}^{\infty}                        \\
+			          & = I + MM*                                               \\
+			M*  - MM* & =I                                                      \\
+			          & \rightleftarrows (I- M)M^*                              \\
+			          & \rightleftarrows M^* = (I - M)^{-1} \label{eq:m_kleene}
+		\end{align}
+		Using \cref{eq:m_kleene} we can calculate $M^*$ in $\mathcal{O}(|\mathcal{N}|^3)$. The entries in the matrix now correspond to:
+		\begin{align}
+			M_{Y,X} & = p_{\text{lc}}(Y | X)
+		\end{align}
+		From this matrix we further need to derive the $p_{\text{lc}(YZ | X)}$. To get these entries we look at the left side of Figure 1 in the exercise sheet.By taking the sum of of a row $X$ we get the probability of deriving $X$ from any string. Now we iterate over all possible choices for $X, X',Y,Z$ to derive:
+		\begin{align}
+			p_{\text{lc}}(YZ | X) & = \sum_{X' \in \Sigma} p_{\text{lc}}(X' | X) p_{\text{lc}}(Y | X') p_{\text{lc}}(Z | X'Y) \label{eq:lc}
+		\end{align}
+		Which can be done in $\mathcal{O}(|\mathcal{N}|^4)$.
+	\end{subquestion}
+	\begin{subquestion}
+		\begin{align}
+			p_{pre}(w_i \dots w_k | X)                                    & = \sum_{j=1}^{k-1} \sum_{Y,Z \in \mathcal{N}} {\color{red} p(X \overset{*}{\Rightarrow} YZ\alpha)}{\color{green}p(Y \overset{*}{\Rightarrow} w_i \dots w_j)}{\color{blue} p(Z \overset{*}{\Rightarrow} w_{j+1} \dots w_k)} \label{eq:pre} \\
+			{\color{red}p(X \overset{*}{\Rightarrow} YZ\alpha)}           & = \text{probability of deriving the two subtrees $Y$ and $Z$ from $X$} \label{eq:pre2}                                                                                                                                                    \\
+			{\color{green}p(Y \overset{*}{\Rightarrow} w_i \dots w_j)}    & = \text{probability of deriving the string $w_i \dots w_j$ from $Y$} \label{eq:pre3}                                                                                                                                                      \\
+			{\color{blue}p(Z \overset{*}{\Rightarrow} w_{j+1} \dots w_k)} & = \text{probability of deriving the string $w_{j+1} \dots w_k$ from $Z$} \label{eq:pre4}                                                                                                                                                  \\
+			                                                              & \sum_{j=1}^{k-1} \sum_{Y,Z \in \mathcal{N}} {\color{red} p(X \overset{*}{\Rightarrow} YZ\alpha)}{\color{green}p(Y \overset{*}{\Rightarrow} w_i \dots w_j)}{\color{blue} p(Z \overset{*}{\Rightarrow} w_{j+1} \dots w_k)}                  \\& =\sum_{j=1}^{k-1} \sum_{Y,Z \in \mathcal{N}}p_{\text{lc}}(YZ | X) p_{\text{inside}}(w_i \dots w_j | Y) p_{\text{pre}}(w_{j+1} \dots w_k | Z) \label{eq:pre5}                                                                               \\
+		\end{align}
+	\end{subquestion}
+	\begin{subquestion}
+		Clarify:
+		We can see that if we have all precomputation done, then the calculation of $p_{pre}(w')$ can be done in $\mathcal{O}(1)$ for a given subsequence $w'$ of $w$. As $|w| = N$, this has runtime $\mathcal{O}(N)$.
+		Now for the precompution, we first look at $p_{\text{lc}}(YZ | X)$. As shown in exercise f) this can be done in $\mathcal{O}(|\mathcal{N}|^4)$.
+		Equation (15) on the exercise sheet shows that $p_{pre}(w_i \dots w_k | X)$ depends only on $p_{\text{lc}}(YZ | X)$, $p_{inside}(w_i \dots w_j)$ and $p_{\text{pre}(w_{j+1} \dots w_k)}$ for $j < k$. The first of the three we have already calculated. We calculate $p_{\text{inside}}$ with the CKY algorithm and save all intermediate values. The size of our grammar is $\mathcal{O}(|\mathcal{N}|^2)$. Thus, CKY runs in $\mathcal{O}(N^3 |\mathcal{N}|^2)$ and we need to run it $\mathcal{O}(|\mathcal{N}|)$ times for each $X \in \Sigma$.
+		\newline
+		After these steps we have all our value precomputed in $\mathcal{O}(N^3 |\mathcal{N}|^3 + |\mathcal{N}|^4)$.
+		We then invoke the algorithm naively for each subsequence of $w_1 \dots w_i$. This gives us a runtime of $\mathcal{O}(N^4 |\mathcal{N}|^3 + N|\mathcal{N}|^4)$.
+	\end{subquestion}
+	\begin{align}
+		s
+	\end{align}
+\end{question}
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

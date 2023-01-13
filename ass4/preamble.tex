@@ -1,0 +1,116 @@
+\textheight24cm
+\topmargin-2.5cm
+\oddsidemargin+0cm
+\textwidth16.3cm
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{color}
+\usepackage[latin1]{inputenc}
+\usepackage{ifthen}
+\usepackage{enumerate}
+\usepackage{lastpage}
+\usepackage{graphicx}
+%\usepackage{subfigure}
+\usepackage{subcaption}
+\usepackage{bm}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{float}
+\usepackage{nicefrac}
+\usepackage{epsfig}
+\usepackage{etoolbox}
+\usepackage{framed}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{datetime}
+\usepackage{url}
+%\usepackage{algorithm}
+\usepackage{svg}
+\usepackage[ruled,vlined, linesnumbered]{algorithm2e}
+\usepackage{setspace}
+\usepackage[htt]{hyphenat}
+\usepackage{qtree}
+\usepackage{forest}
+\usepackage{inconsolata} % for texttt{}
+
+
+\usepackage[noend]{algpseudocode}
+\algnewcommand{\parState}[1]{\State%
+  \parbox[t]{\dimexpr\linewidth-\algmargin}{\strut\hangindent=\algorithmicindent \hangafter=1 #1\strut}}
+
+\algrenewcommand\algorithmicindent{1.0em}%
+\renewcommand\algorithmicdo{:}
+\renewcommand\algorithmicthen{:}
+\input{math_commands}
+
+%\newcommand{\linetofill}{\ \\\hphantom{\hspace{0mm}}\hrulefill\ \\}
+\newcommand{\linetofill}{\ \\\hphantom{\hspace{0mm}}\dotfill\ \\}
+\newcommand{\vlinetofill}[1]{\\\rule{#1 mm}{0.1mm}\ \\}
+\newcommand{\cbox}{
+  \setlength{\unitlength}{1pt}
+  \begin{picture}(10,10)
+    \put(0,0){\line(1,0){8}} \put(0,8){\line(1,0){8}}
+    \put(0,0){\line(0,1){8}} \put(8,0){\line(0,1){8}}
+  \end{picture}
+}
+\newcommand{\bigcbox}{
+  \setlength{\unitlength}{3pt}
+  \begin{picture}(10,10)(1,1)
+    \put(0,0){\line(1,0){8}} \put(0,8){\line(1,0){8}}
+    \put(0,0){\line(0,1){8}} \put(8,0){\line(0,1){8}}
+  \end{picture}
+}
+% points and boxes on the right
+\newcommand{\points}[1]{
+  \ \\[-5mm]
+  \hphantom{\ }\hfill\textbf{#1 pts \bigcbox \hspace{-6mm}}
+  \vspace{5mm}
+}
+% multiple choice checkboxes
+%\newcommand{\boxt}{\hspace*{2em} $[~~]$ \textsf{True}}
+%\newcommand{\boxf}{\hspace*{2em} $[~~]$ \textsf{False}}
+\newcommand{\boxt}{\hspace*{2em} $\square$ \textsf{True}}
+\newcommand{\boxf}{\hspace*{2em} $\square$ \textsf{False}}
+\newcommand{\justif}{\textsf{Justification}:  \rule{0ex}{2em}\dotfill\\\rule{0ex}{2em}\dotfill}
+\newcommand{\checkboxWithJustification}{\boxt \boxf\\ \justif\\}
+\newcommand{\checkbox}{\boxt \boxf}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{pgfplots}
+\pgfmathdeclarefunction{gauss}{2}{%
+  \pgfmathparse{1/(#2*sqrt(2*pi))*exp(-((x-#1)^2)/(2*#2^2))}%
+}
+\renewcommand{\S}{{\cal S}}
+\usepackage{pgfplots}
+\pgfplotsset{compat=newest}
+\pgfplotsset{small, every non boxed x axis/.append style={x axis line style=-},
+  every non boxed y axis/.append style={y axis line style=-}}
+
+\newcommand{\timestamp}{\ddmmyyyydate\today \,\,- \currenttime h}
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "exam"
+%%% End:
+
+% Numbers
+\usepackage[group-separator={,}]{siunitx}
+
+\usepackage{cleveref}
+\crefname{section}{\S}{\S\S}
+\Crefname{section}{\S}{\S\S}
+\crefname{table}{Tab.}{}
+\crefname{figure}{Fig.}{}
+\crefname{algorithm}{Algorithm}{}
+\crefname{equation}{eq.}{}
+\crefname{appendix}{App.}{}
+\crefname{thm}{Theorem}{}
+\crefname{prop}{Proposition}{}
+\crefname{cor}{Corollary}{}
+\crefname{observation}{Observation}{}
+\crefname{assumption}{Assumption}{}
+\crefformat{section}{\S#2#1#3}
