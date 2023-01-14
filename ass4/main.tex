@@ -27,23 +27,25 @@
 \begin{question}\\
 	\begin{subquestion}
 		\begin{align}
-			\sum_{w \in \Sigma^*} \tilde{p}(w) & = \sum_{w \in \Sigma^*, |w|=1} \tilde{p}(w) + \sum_{w \in \Sigma^*, |w|=2} \tilde{p}(w) + \sum_{w \in \Sigma^*, |w|=3} \tilde{p}(w) + \dots                      \\
-			                                   & = \sum_{w \in \Sigma} \tilde{p}(w) + \sum_{w \in \Sigma^*, |w|=2} \tilde{p}(w) + \sum_{w \in \Sigma^*, |w|=3} \tilde{p}(w) + \dots                               \\
-			                                   & = 1 + \sum_{w \in \Sigma^*, |w|=2} \tilde{p}(w) + \sum_{w \in \Sigma^*, |w|=3} \tilde{p}(w) + \dots                                                              \\
-			                                   & = 1 + \sum_{w \in \Sigma, |w|=1} \sum_{w' \in \Sigma^*} \tilde{p}(w) \tilde{p}(w') + \sum_{w \in \Sigma^*, |w|=3} \tilde{p}(w) + \dots                           \\
-			                                   & = 1 + \sum_{w \in \Sigma} \tilde{p}(w) \sum_{w' \in \Sigma^*, |w|=1} \tilde{p}(w') + \sum_{w \in \Sigma^*, |w|=3} \tilde{p}(w) + \dots                           \\
-			                                   & = 1 + \sum_{w \in \Sigma} \tilde{p}(w) \sum_{w' \in \Sigma} \tilde{p}(w') + \sum_{w \in \Sigma^*, |w|=3} \tilde{p}(w) + \dots                                    \\
-			                                   & = 1 + 1 \cdot 1 + \sum_{w \in \Sigma^*, |w|=3} \tilde{p}(w) + \dots                                                                                              \\
-			                                   & = 1 + 1 \cdot 1 + \sum_{w \in \Sigma}  \sum_{w \in \Sigma^*, |w|=2} \tilde{p}(w) \tilde{p}(w') + \dots                                                           \\
-			                                   & = 1 + 1 \cdot 1 + \sum_{w \in \Sigma} \tilde{p}(w) \sum_{w \in \Sigma^*, |w|=2} \tilde{p}(w') + \dots                                                            \\
-			                                   & = 1 + 1 \cdot 1 + 1 \cdot 1 \cdot 1 + \dots                                                                                                \label{1a_inf_series}
+			\sum_{w \in \Sigma^*} \tilde{p}(w) & = \sum_{w \in \Sigma^*, |w|=1} \tilde{p}(w) + \sum_{w \in \Sigma^*, |w|=2} \tilde{p}(w) + \sum_{w \in \Sigma^*, |w|=3} \tilde{p}(w) + \dots \\
+			                                   & = \sum_{w \in \Sigma} \tilde{p}(w) + \sum_{w \in \Sigma^*, |w|=2} \tilde{p}(w) + \sum_{w \in \Sigma^*, |w|=3} \tilde{p}(w) + \dots          \\
+			                                   & = 1 + \sum_{w \in \Sigma^*, |w|=2} \tilde{p}(w) + \sum_{w \in \Sigma^*, |w|=3} \tilde{p}(w) + \dots                                         \\
+			                                   & = 1 + \sum_{w \in \Sigma, |w|=1} \sum_{w' \in \Sigma^*} \tilde{p}(w) \tilde{p}(w') + \sum_{w \in \Sigma^*, |w|=3} \tilde{p}(w) + \dots      \\
+			                                   & = 1 + \sum_{w \in \Sigma} \tilde{p}(w) \sum_{w' \in \Sigma^*, |w|=1} \tilde{p}(w') + \sum_{w \in \Sigma^*, |w|=3} \tilde{p}(w) + \dots      \\
+			                                   & = 1 + \sum_{w \in \Sigma} \tilde{p}(w) \sum_{w' \in \Sigma} \tilde{p}(w') + \sum_{w \in \Sigma^*, |w|=3} \tilde{p}(w) + \dots               \\
+			                                   & = 1 + 1 \cdot 1 + \sum_{w \in \Sigma^*, |w|=3} \tilde{p}(w) + \dots                                                                         \\
+			                                   & = 1 + 1 \cdot 1 + \sum_{w \in \Sigma}  \sum_{w \in \Sigma^*, |w|=2} \tilde{p}(w) \tilde{p}(w') + \dots                                      \\
+			                                   & = 1 + 1 \cdot 1 + \sum_{w \in \Sigma} \tilde{p}(w) \sum_{w \in \Sigma^*, |w|=2} \tilde{p}(w') + \dots                                       \\
+			                                   & = 1 + 1 \cdot 1 + 1 \cdot 1 \cdot 1 + \dots                                                                                                 \\
+			                                   & = \sum_{i=1}^{\infty} 1^{i}                                                                                         \label{1a_inf_series}
 		\end{align}
-		We can see that the series \eqref{1a_inf_series} diverges to $\infty$.
+		We can see that the series in \eqref{1a_inf_series} diverges to $\infty$.
 	\end{subquestion}
 	\begin{subquestion}
 		We first state some equations that are used later:
 		\begin{align}
 			\sum_{w \in \Sigma \cup \{\eos\}} p(w) & = 1 \label{1b_sum_p}                                                                                 \\
+			\Rightarrow \sum_{w \in \Sigma} p(w)   & = 1 - p(\eos)                                                                                        \\
 			\sum_{w \in \Sigma} p(w)               & < 1                                                                                                  \\
 			\sum_{w \in \Sigma} p(\eos)p(w)        & = p(\eos) \sum_{w \in \Sigma} p(w)                                                                   \\
 			\sum_{w \in \Sigma^*, |w|=0} p(w)      & = p(\eos)                          &  & \text{because we have only one EOS symbol} \label{1b_sum_p0} \\
@@ -51,11 +53,13 @@
 		We define $l$ as:
 		\begin{align}
 			l & = \sum_{w \in \Sigma} p(w) \label{1b_def_l} \\
+			  & = (1 - p(\eos)) \label{1b_def_l2}           \\
 			l & < 1
 		\end{align}
+		Now we can formulate the given equation:
 		\begin{align}
-			\sum_{w \in \Sigma^*} p(w) & =  \sum_{w \in \Sigma^*, |w|=0} \tilde{p}(w) + \sum_{w \in \Sigma^*, |w|=1} \tilde{p}(w) + \sum_{w \in \Sigma^*, |w|=2} \tilde{p}(w) + \sum_{w \in \Sigma^*, |w|=3} \tilde{p}(w) + \dots                       \\
-			                           & = p(\eos) + \sum_{w \in \Sigma^*, |w|=1} \tilde{p}(w) + \sum_{w \in \Sigma^*, |w|=2} \tilde{p}(w) + \sum_{w \in \Sigma^*, |w|=3} \tilde{p}(w) + \dots                                                          \\
+			\sum_{w \in \Sigma^*} p(w) & =  \sum_{w \in \Sigma^*, |w|=0} p(w) + \sum_{w \in \Sigma^*, |w|=1} p(w) + \sum_{w \in \Sigma^*, |w|=2} p(w) + \sum_{w \in \Sigma^*, |w|=3} p(w) + \dots                                                       \\
+			                           & = p(\eos) + \sum_{w \in \Sigma^*, |w|=1} p(w) + \sum_{w \in \Sigma^*, |w|=2} p (w) + \sum_{w \in \Sigma^*, |w|=3} p(w) + \dots                                                                                 \\
 			                           & = p(\eos) \left( 1 + \sum_{w \in \Sigma^*, |w|=1} \tilde{p}(w) + \sum_{w \in \Sigma^*, |w|=2} \tilde{p}(w) + \sum_{w \in \Sigma^*, |w|=3} \tilde{p}(w) + \dots                                         \right) \\
 			                           & = p(\eos) \left( 1 + \sum_{w \in \Sigma^*, |w|=1} \tilde{p}(w) + \sum_{w \in \Sigma^*, |w|=2}  \tilde{p}(w) + \sum_{w \in \Sigma^*, |w|=3}  \tilde{p}(w) + \dots  \right)                                      \\
 			                           & =  p(\eos) \left( 1 + \sum_{w \in \Sigma} p(w) + \sum_{w \in \Sigma^*, |w|=2}  \tilde{p}(w) + \sum_{w \in \Sigma^*, |w|=3}  \tilde{p}(w) + \dots \right)                                                       \\
@@ -82,34 +86,45 @@
 		\end{align}
 	\end{subquestion}
 	\begin{subquestion}
-		We use CKY with the $(+, \times)$-semiring. Further we use $\log p$ insted of $p$ for our score function. These operations will lead to the desired $p(w)$ being calculated at the top of the tree.
+		We use CKY with the $(+, \times)$-semiring. Further we use $\log p$ insted of $p$ for our score function. These operations will lead to $p(w_1 \dots w_n | S)$ being calculated at the top of the tree because we fill the tree according to:
+		\begin{align}
+			\text{s} [i,k,X] & = \sum_{k}^{} \sum_{i} \sum_{j} \exp (\text{score} (X \rightarrow YZ)) \times \text{s} [i,j,Y] \times \text{s} [j,k,Z] \\
+			                 & = \exp(\log(p(YZ | X))) \times p(w_i \dots w_j | Y) \times p(w_{j+1} \dots w_k | Z)                                    \\
+			                 & = p(YZ | X) \times p(w_i \dots w_j | Y) \times p(w_{j+1} \dots w_k | Z)                                                \\
+			                 & = p(w_i \dots w_k | X)
+		\end{align}
+		We can the easily multiply $p(w_1 \dots w_n | S)$ by $p(\text{EOS})$ and get the desired result.
 	\end{subquestion}
 	\begin{subquestion}
 		\begin{align}
-			p(S \overset{*}{\Rightarrow} wv) & = \sum_{t \in \mathcal{T}_x(wv)} p(t)                                                                                                                                        \\
-			                                 & = \sum_{t \in \mathcal{T}_x(w_0, \dots, w_k)} p(t) + \sum_{t \in \mathcal{T}_x(w_{k+1}, \dots, v_0, \dots, v_m)} p(t) + \sum_{t \in \mathcal{T}_x(v_{m+1}, \dots, v_l)} p(t) \\
+			\sum_{u \in \Sigma^*} p(wu) & = \sum_{u \in \Sigma^*} p_{\text{inside}}(wu | S)     \\
+			                            & = p(X \overset{*}{\Rightarrow} w_i \dots w_k)         \\
+			                            & = p(S \overset{*}{\Rightarrow} wv) \label{eq:1e_conc} \\
 		\end{align}
-		?????
+		\cref*{eq:1e_conc} holds, because summing over all possible suffixes is equivalent to allow all different derivation trees that produce $v$.
 	\end{subquestion}
 	\begin{subquestion}
-		Following the hint given in the exercise, we create a matrix $M \in |\mathcal{N}| \times |\mathcal{N}|$ where each entry $M_{Y,X}$ corresponds to the probability of deriving $Y$ from $X$:
+		Following the hint given in the exercise, we create a matrix $M \in |\mathcal{N}| \times |\mathcal{N}|$ where each entry $M_{X,Y}$ corresponds to the probability of deriving $Y$ from $X$:
 		\begin{align}
 			M_{Y,X} & = p(X \rightarrow Y\alpha)
 		\end{align}
-		We can see that by multiplying in the inside semiring this matrix with itself we get the probability of deriving $i$ from $j$ in two steps and so on. Thus, the kleene star over $M$ will yield the desired property. To derive the kleene star:
+		We can see that by multiplying in the inside semiring this matrix with itself we get the probability of deriving $i$ from $j$ in two steps and so on. Thus, the kleene star over $M$ will yield the desired property. To derive the kleene star we use Lehmann's algorithm:
 		\begin{align}
-			M^*       & =\bigotimes_{k=0}^{\infty}                              \\
-			          & =I + M \bigotimes_{k=0}^{\infty}                        \\
-			          & = I + MM*                                               \\
-			M*  - MM* & =I                                                      \\
-			          & \rightleftarrows (I- M)M^*                              \\
-			          & \rightleftarrows M^* = (I - M)^{-1} \label{eq:m_kleene}
+			M^* & =\bigotimes_{k=0}^{\infty} M      \\
+			    & = I + M \bigotimes_{k=0}^{\infty} \\
+			    & = I + MM^*
 		\end{align}
-		Using \cref{eq:m_kleene} we can calculate $M^*$ in $\mathcal{O}(|\mathcal{N}|^3)$. The entries in the matrix now correspond to:
 		\begin{align}
-			M_{Y,X} & = p_{\text{lc}}(Y | X)
+			M^*  - MM^* & =I                                 \\
+			(I- M)M^*   & = I                                \\
+			M^*         & = (I - M)^{-1} \label{eq:m_kleene}
 		\end{align}
-		From this matrix we further need to derive the $p_{\text{lc}(YZ | X)}$. To get these entries we look at the left side of Figure 1 in the exercise sheet.By taking the sum of of a row $X$ we get the probability of deriving $X$ from any string. Now we iterate over all possible choices for $X, X',Y,Z$ to derive:
+		As stated in the lecture notes, for \cref*{eq:m_kleene} to holde we require the largest eigenvalue of $M$ to be smaller than $1$. This translates to the condition that all diagonal entries of $M$ have to be $< 1$. The diagonal entries correspond to the probability of deriving a symbol from itself. This probability has to be smaller than $1$ in our case, since otherwise we would not be able to generate any other symbol from it than itself, which would results in infinite sentences.\\
+		Then, using \cref{eq:m_kleene} we can calculate $M^*$ in $\mathcal{O}(|\mathcal{N}|^3)$. The entries in the matrix now correspond to:
+		\begin{align}
+			M^*_{X,Y} = p[X \overset{*}{\Rightarrow} Y\alpha] & = p_{\text{lc}}(Y | X)
+		\end{align}
+		From this matrix we further need to derive the $p_{\text{lc}}(YZ | X)$. We iterate over all possible choices for $X, X',Y,Z$ to derive:
 		\begin{align}
 			p_{\text{lc}}(YZ | X) & = \sum_{X' \in \Sigma} p_{\text{lc}}(X' | X) p_{\text{lc}}(Y | X') p_{\text{lc}}(Z | X'Y) \label{eq:lc}
 		\end{align}
