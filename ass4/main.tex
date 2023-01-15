@@ -93,6 +93,7 @@
 			                 & = p(YZ | X) \times p(w_i \dots w_j | Y) \times p(w_{j+1} \dots w_k | Z)                                                \\
 			                 & = p(w_i \dots w_k | X)
 		\end{align}
+		Where $k$, $i$ and $j$ are the indices that the CKY algorithm goes over.
 		We can the easily multiply $p(w_1 \dots w_n | S)$ by $p(\text{EOS})$ and get the desired result.
 	\end{subquestion}
 	\begin{subquestion}
@@ -126,7 +127,7 @@
 		\end{align}
 		From this matrix we further need to derive the $p_{\text{lc}}(YZ | X)$. We iterate over all possible choices for $X, X',Y,Z$ to derive:
 		\begin{align}
-			p_{\text{lc}}(YZ | X) & = \sum_{X' \in \Sigma} p_{\text{lc}}(X' | X) p_{\text{lc}}(Y | X') p_{\text{lc}}(Z | X'Y) \label{eq:lc}
+			p_{\text{lc}}(YZ | X) & = \sum_{X' \in \Sigma} p_{\text{lc}}(X' | X) p(X' \Rightarrow YZ) \label{eq:lc}
 		\end{align}
 		Which can be done in $\mathcal{O}(|\mathcal{N}|^4)$.
 	\end{subquestion}
@@ -138,19 +139,38 @@
 			{\color{blue}p(Z \overset{*}{\Rightarrow} w_{j+1} \dots w_k)} & = \text{probability of deriving the string $w_{j+1} \dots w_k$ from $Z$} \label{eq:pre4}                                                                                                                                                  \\
 			                                                              & \sum_{j=1}^{k-1} \sum_{Y,Z \in \mathcal{N}} {\color{red} p(X \overset{*}{\Rightarrow} YZ\alpha)}{\color{green}p(Y \overset{*}{\Rightarrow} w_i \dots w_j)}{\color{blue} p(Z \overset{*}{\Rightarrow} w_{j+1} \dots w_k)}                  \\& =\sum_{j=1}^{k-1} \sum_{Y,Z \in \mathcal{N}}p_{\text{lc}}(YZ | X) p_{\text{inside}}(w_i \dots w_j | Y) p_{\text{pre}}(w_{j+1} \dots w_k | Z) \label{eq:pre5}                                                                               \\
 		\end{align}
+		The three colored parts correspond to the subtrees shown in Figure 1 b) on the exercise sheet.
 	\end{subquestion}
 	\begin{subquestion}
-		Clarify:
-		We can see that if we have all precomputation done, then the calculation of $p_{pre}(w')$ can be done in $\mathcal{O}(1)$ for a given subsequence $w'$ of $w$. As $|w| = N$, this has runtime $\mathcal{O}(N)$.
+		We can see that if we have all precomputation done, then the calculation of $p_{pre}(w')$ can be done in $\mathcal{O}(1)$ for a given subsequence $w'$ of $w$. As $|w| = N$, this has runtime $\mathcal{O}(N)$.\\
 		Now for the precompution, we first look at $p_{\text{lc}}(YZ | X)$. As shown in exercise f) this can be done in $\mathcal{O}(|\mathcal{N}|^4)$.
-		Equation (15) on the exercise sheet shows that $p_{pre}(w_i \dots w_k | X)$ depends only on $p_{\text{lc}}(YZ | X)$, $p_{inside}(w_i \dots w_j)$ and $p_{\text{pre}(w_{j+1} \dots w_k)}$ for $j < k$. The first of the three we have already calculated. We calculate $p_{\text{inside}}$ with the CKY algorithm and save all intermediate values. The size of our grammar is $\mathcal{O}(|\mathcal{N}|^2)$. Thus, CKY runs in $\mathcal{O}(N^3 |\mathcal{N}|^2)$ and we need to run it $\mathcal{O}(|\mathcal{N}|)$ times for each $X \in \Sigma$.
-		\newline
-		After these steps we have all our value precomputed in $\mathcal{O}(N^3 |\mathcal{N}|^3 + |\mathcal{N}|^4)$.
-		We then invoke the algorithm naively for each subsequence of $w_1 \dots w_i$. This gives us a runtime of $\mathcal{O}(N^4 |\mathcal{N}|^3 + N|\mathcal{N}|^4)$.
+		$p_{\text{pre}}(w_k | X)$ can be calculated as follows:
+		\begin{align}
+			p_{\text{pre}}(w_k | X) & = p_{\text{pre}}(X \overset{*}{\Rightarrow} w_k)                  &  & \text{eq (12) on ex. sheet} \\
+			                        & = \sum_{Y \in \mathcal{N}} p_{\text{lc}}(Y|X)p(Y \Rightarrow w_k)
+		\end{align}
+		Due to our PCFG being in CNF, this can be done in $\mathcal{O}(|\mathcal{N}|)$ and further for all $X \in \mathcal{N}$ in $\mathcal{O}(|\mathcal{N}|^2)$.\\
+		We calculate $p_{\text{inside}}$ with the CKY algorithm and save all intermediate values. The size of our grammar is $\mathcal{O}(|\mathcal{N}|^3)$. Thus, CKY runs in $\mathcal{O}(N^3 |\mathcal{N}|^3)$. As in exercise d) we use the $\log p$ as our score function.\\
+		We can now calculate:
+		\begin{align}
+			p_{\text{pre}}(w_{i} \dots w_k | X) & = \sum_{j=i}^{k-1} \sum_{Y,Z \in \mathcal{N}} p_{\text{lc}}(YZ | X) p_{\text{inside}}(w_i \dots w_j | Y) p_{\text{pre}}(w_{j+1} \dots w_k | Z)
+		\end{align}
+		Where we start with $i = k-1$ and iterate until the desired $i$. For each iteration, the outer sum is in $\mathcal{O}(N)$, the inner sum is in $\mathcal{O}(|\mathcal{N}|^2)$ and the computation is in $\mathcal{O}(1)$. Thus, the total runtime is $\mathcal{O}(N^2 |\mathcal{N}|^3)$ as we have to go over the length of $w$ and over all $X$. Concluding then the runtime of the whole procedure for all prefixes of $w$ is:
+		\begin{align}
+			\mathcal{O}(N (|\mathcal{N}|^4 + N^3 |\mathcal{N}|^3 + N^2 |\mathcal{N}|^3)) & = \mathcal{O}(N^4 |\mathcal{N}|^3 + N |\mathcal{N}|^4)
+		\end{align}
 	\end{subquestion}
-	\begin{align}
-		s
-	\end{align}
+	\begin{subquestion}
+		We now use CKY to calculate the prefix probabilities. The precomputation of the left corner and inside probabilities can be left as is. The CKY update function will be:
+		\begin{align}
+			\text{chart}[i,k,X] & = \sum_{j=i}^{k-1} \sum_{Y,Z \in \mathcal{N}} p_{\text{lc}}(YZ | X) p_{\text{inside}}(w_i \dots w_j | Y) \text{chart}[j+1, k, Z] \label{eq:cky} \\
+			                    & = p_{pre}(w_i \dots w_k | X)
+		\end{align}
+		Hence, we have the same runtime as the CKY algorithm plus all precomputation steps. To initialize the chart, we have to calculate all $\text{chart}[i,i,X] = p_{pre}(w_i | X) | \forall i$, takes $N$ times $\mathcal{O}(|\mathcal{N}|^2)$, thus $\mathcal{O}(N |\mathcal{N}|^2)$. So the total runtime is:
+		\begin{align}
+			\mathcal{O}(N |\mathcal{N}|^2 + N^3 |\mathcal{N}|^3 + N^2 |\mathcal{N}|^3 + |\mathcal{N}|^4) & = \mathcal{O}(N^3 |\mathcal{N}|^3 + |\mathcal{N}|^4)
+		\end{align}
+	\end{subquestion}
 \end{question}
 \end{document}
 
